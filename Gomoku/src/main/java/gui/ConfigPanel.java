@@ -47,6 +47,7 @@ public class ConfigPanel extends JPanel implements ItemListener {
 		this.whomBegins = new JComboBox<String>();
 		this.whomBegins.setModel(new DefaultComboBoxModel<String>(new String[] {"IA", "User"}));
 		this.whomBegins.setSelectedIndex(0);
+		this.whomBegins.setEnabled(false);
 		add(this.whomBegins, c);
 		
 		this.gameType.setSelectedIndex(0);//1

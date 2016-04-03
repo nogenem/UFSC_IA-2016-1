@@ -10,6 +10,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import core.Board;
@@ -66,12 +67,21 @@ public class GamePanel extends JPanel {
 		    int x = (int) Math.round((e.getX() - xLeft) / squareWidth - 0.5);
 		    int y = (int) Math.round((e.getY() - yTop) / squareWidth - 0.5);
 
-		    System.out.println("X: "+x+" - Y: "+y);
 		    if (y >= 0 && y < size && x >= 0 && x < size
 		    		&& state.getPiece(x, y) == Board.NO_VAL) {
 		    	state.playPiece(x, y);
 		    	repaint();
-		    	if(state.checkVitory()){
+		    	char vic = state.checkVitory(x, y);
+		    	if(vic != Board.NO_VAL){
+		    		switch(vic){
+		    		case Board.BLACK:
+		    		case Board.WHITE:
+		    			JOptionPane.showMessageDialog(parent, "Player "+
+		    					(vic==Board.WHITE?"Branco":"Preto")+" venceu o jogo!");
+		    			break;
+		    		case Board.TIE_VAL:
+		    			JOptionPane.showMessageDialog(parent, "O jogo empatou!");
+		    		}
 		    		parent.gameOver();
 		    	}
 		    }

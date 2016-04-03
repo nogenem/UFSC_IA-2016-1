@@ -1,5 +1,7 @@
 package core;
 
+import javax.swing.JOptionPane;
+
 public class GomokuState {
 	
 	private Board board;
@@ -23,8 +25,11 @@ public class GomokuState {
 		}
 	}
 	
-	public boolean checkVitory(){
-		return false;
+	public char checkVitory(int x, int y){
+		char gameState = this.board.checkGameState(x, y, currentPlayer);
+		this.currentPlayer = this.currentPlayer == Board.BLACK ? 
+					Board.WHITE : Board.BLACK;
+		return gameState;
 	}
 	
 	public char getPiece(int x, int y){
@@ -33,7 +38,6 @@ public class GomokuState {
 	
 	public void playPiece(int x, int y){
 		this.board.setValue(x, y, this.currentPlayer);
-		this.currentPlayer = this.currentPlayer == Board.BLACK ? Board.WHITE : Board.BLACK;
 	}
 
 }
