@@ -26,6 +26,8 @@ local.properties
 .settings/
 .loadpath
 
+.recommenders
+
 *.class
 
 # Mobile Tools for Java (J2ME)
