@@ -49,9 +49,13 @@ public class GamePanel extends JPanel {
 	public void init(boolean isMultiplayer, boolean iaBegins){
     	this.isMultiplayer = isMultiplayer;
 		this.iaBegins = iaBegins;
-		this.canPlayerInteract = (!isMultiplayer && iaBegins) ? false : true;
+		
+		boolean tmp = (!isMultiplayer && iaBegins);
+		this.canPlayerInteract = !tmp;
 
-		state.init(iaBegins);
+		state.init(tmp);
+		if(tmp)
+			this.canPlayerInteract = true;
     }
 	
 	class GomokuListener extends MouseAdapter {
@@ -71,22 +75,41 @@ public class GamePanel extends JPanel {
 		    		&& state.getPiece(x, y) == Board.NO_VAL) {
 		    	state.playPiece(x, y);
 		    	repaint();
-		    	char vic = state.checkVitory(x, y);
-		    	if(vic != Board.NO_VAL){
-		    		switch(vic){
-		    		case Board.BLACK:
-		    		case Board.WHITE:
-		    			JOptionPane.showMessageDialog(parent, "Player "+
-		    					(vic==Board.WHITE?"Branco":"Preto")+" venceu o jogo!");
-		    			break;
-		    		case Board.TIE_VAL:
-		    			JOptionPane.showMessageDialog(parent, "O jogo empatou!");
-		    		}
-		    		parent.gameOver();
+		    	if(checkVictory(x, y))
+		    		return;
+		    	
+		    	if(!isMultiplayer){
+		    		canPlayerInteract = false;
+		    		
+		    		int move[] = state.iaMove();
+		    		state.playPiece(move[0], move[1]);
+		    		repaint();
+		    		
+		    		if(checkVictory(move[0], move[1]))
+		    			return;
+		    		canPlayerInteract = true;
 		    	}
 		    }
 		}    
     }
+	
+	public boolean checkVictory(int x, int y){
+		char vic = state.checkVitory(x, y);
+    	if(vic != Board.NO_VAL){
+    		switch(vic){
+    		case Board.BLACK:
+    		case Board.WHITE:
+    			JOptionPane.showMessageDialog(parent, "Player "+
+    					(vic==Board.WHITE?"Branco":"Preto")+" venceu o jogo!");
+    			break;
+    		case Board.TIE_VAL:
+    			JOptionPane.showMessageDialog(parent, "O jogo empatou!");
+    		}
+    		parent.gameOver();
+    		return true;
+    	}
+    	return false;
+	}
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;

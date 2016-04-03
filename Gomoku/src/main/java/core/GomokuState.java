@@ -1,7 +1,5 @@
 package core;
 
-import javax.swing.JOptionPane;
-
 public class GomokuState {
 	
 	private Board board;
@@ -21,8 +19,13 @@ public class GomokuState {
 		
 		this.ia.setIaPlayer(iaBegins ? Board.BLACK : Board.WHITE);
 		if(iaBegins){
-			ia.performMove(this.board);
+			int move[] = this.iaMove();
+			this.playPiece(move[0], move[1]);
 		}
+	}
+	
+	public int[] iaMove(){
+		return ia.performMove(this.board);
 	}
 	
 	public char checkVitory(int x, int y){

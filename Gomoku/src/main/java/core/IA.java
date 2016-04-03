@@ -14,8 +14,10 @@ public class IA {
 		this.userPlayer = val==Board.BLACK ? Board.WHITE : Board.BLACK;
 	}
 	
-	public void performMove(Board board){
+	public int[] performMove(Board board){
+		int move[] = {0, 0};
 		
+		return move;
 	}
 
 }
