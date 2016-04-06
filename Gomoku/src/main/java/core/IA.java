@@ -32,5 +32,17 @@ public class IA {
 		
 		return move;
 	}
-
+	
+	/**
+	 * Ideia inicial do método para verificar se um tabuleiro
+	 *  é folha ou não.
+	 * 
+	 * @param board				Board, node, a verificação.
+	 * @param lastMove			Ultimo movimento realizado no tabuleiro.
+	 * @return					<b>TRUE</b> caso o tabuleiro seja folha,</br>
+	 * 							<b>FALSE</b> caso contrario.
+	 */
+	private boolean isLeaf(Board board, Move lastMove){
+		return board.checkBoardState(lastMove) != Board.NO_VAL;
+	}
 }
