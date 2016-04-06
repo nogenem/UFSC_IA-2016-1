@@ -11,10 +11,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class ConfigPanel extends JPanel implements ItemListener {
 	
-	private JComboBox<String> gameType;
-	private JComboBox<String> whomBegins;
+	private JComboBox<String> gameType;//Multiplayer, Single Player
+	private JComboBox<String> whomBegins;//IA, User
 	
 	public ConfigPanel() {
 		setLayout(new GridBagLayout());

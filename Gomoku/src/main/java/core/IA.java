@@ -14,8 +14,9 @@ public class IA {
 		this.userPlayer = val==Board.BLACK ? Board.WHITE : Board.BLACK;
 	}
 	
-	public int[] performMove(Board board){
-		int move[] = {0, 0};
+	// Fazer busca em spiral
+	public Move getBestMove(Board board){
+		Move move = new Move();
 		
 		return move;
 	}

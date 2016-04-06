@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import core.Board;
 import core.GomokuState;
+import core.Move;
 
 /**
  *	Arquivo base:
@@ -23,6 +24,7 @@ import core.GomokuState;
  * @author Todd W. Neller [base]
  * @author Gilney Nathanael Mathias [edições]
  */
+@SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	
 	private final int MARGIN = 5;
@@ -50,7 +52,7 @@ public class GamePanel extends JPanel {
     	this.isMultiplayer = isMultiplayer;
 		this.iaBegins = iaBegins;
 		
-		boolean tmp = (!isMultiplayer && iaBegins);
+		boolean tmp = (!isMultiplayer && iaBegins);//ia realmente começa?
 		this.canPlayerInteract = !tmp;
 
 		state.init(tmp);
@@ -75,26 +77,27 @@ public class GamePanel extends JPanel {
 		    		&& state.getPiece(x, y) == Board.NO_VAL) {
 		    	state.playPiece(x, y);
 		    	repaint();
-		    	if(checkVictory(x, y))
+		    	if(checkVictory())
 		    		return;
 		    	
 		    	if(!isMultiplayer){
 		    		canPlayerInteract = false;
 		    		
-		    		int move[] = state.iaMove();
-		    		state.playPiece(move[0], move[1]);
+		    		Move move = state.getIaMove();
+		    		state.playPiece(move);
 		    		repaint();
 		    		
-		    		if(checkVictory(move[0], move[1]))
+		    		if(checkVictory())
 		    			return;
+		    		
 		    		canPlayerInteract = true;
 		    	}
 		    }
 		}    
     }
 	
-	public boolean checkVictory(int x, int y){
-		char vic = state.checkVitory(x, y);
+	public boolean checkVictory(){
+		char vic = state.checkVitory();
     	if(vic != Board.NO_VAL){
     		switch(vic){
     		case Board.BLACK:
