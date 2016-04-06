@@ -12,9 +12,11 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class Gomoku extends JFrame implements ActionListener {
-
+	
+	// Dimensão para o frame quando possuir o painel de configuração
 	private final Dimension configDim = new Dimension(250, 200);
-	private final Dimension gomokuDim = new Dimension(600, 650);
+	// Dimensão para o frame quando possuir o painel do jogo
+	private final Dimension gameDim = new Dimension(600, 650);
 
 	private GamePanel gamePanel;
 	private ConfigPanel configPanel;
@@ -33,7 +35,11 @@ public class Gomoku extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		new Gomoku();
 	}
-
+	
+	/**
+	 * Remove outros painéis do frame, caso tenha algum, e 
+	 *  adiciona o painel de configuração do jogo.
+	 */
 	private void showConfig() {
 		// Remove a gamePanel, se ele estiver visivel
 		if (getContentPane().getComponentCount() > 0) {
@@ -46,14 +52,18 @@ public class Gomoku extends JFrame implements ActionListener {
 
 		setLocationRelativeTo(null); //centraliza a window
 	}
-
+	
+	/**
+	 * Remove outros painéis do frame, caso tenha algum, e 
+	 *  adiciona o painel do jogo.
+	 */
 	private void showGame() {
 		// Remove a configPanel, se ele estiver visivel
 		if (getContentPane().getComponentCount() > 0) {
 			getContentPane().removeAll();
 		}
 
-		setSize(this.gomokuDim);
+		setSize(this.gameDim);
 		getContentPane().add(getGamePanel(), BorderLayout.CENTER);
 
 		setLocationRelativeTo(null); //centraliza a window
@@ -63,11 +73,15 @@ public class Gomoku extends JFrame implements ActionListener {
 
 		getGamePanel().init(gameType == "Multiplayer", whomBegins == "IA");
 	}
-
+	
+	/**
+	 * Apenas um wrapper para a função {@link #showConfig()} para ser chamado
+	 *  pela classe GamePanel quando o jogo terminar.
+	 */
 	public void gameOver() {
 		showConfig();
 	}
-
+	
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == "Come\u00E7ar") {//Começar
 			showGame();
@@ -77,6 +91,13 @@ public class Gomoku extends JFrame implements ActionListener {
 	}
 
 	// ------- Getters and Setters ------- \\
+	/**
+	 * Retorna o painel de botões da janela de configuração do jogo.</br>
+	 * Caso o painel ainda não tenha sido criado, ele é criado antes de 
+	 *  ser retornado.
+	 * 
+	 * @return				Painel de botões.
+	 */
 	public JPanel getBtnsPanel() {
 		if (this.btnsPanel == null) {
 			JPanel panel = new JPanel();
@@ -94,13 +115,27 @@ public class Gomoku extends JFrame implements ActionListener {
 		}
 		return this.btnsPanel;
 	}
-
+	
+	/**
+	 * Retorna o painel de configuração do jogo.</br>
+	 * Caso o painel ainda não tenha sido criado, ele é criado antes de 
+	 *  ser retornado.
+	 * 
+	 * @return				Painel de configuração.
+	 */
 	public ConfigPanel getConfigPanel() {
 		if (this.configPanel == null)
 			this.configPanel = new ConfigPanel();
 		return this.configPanel;
 	}
-
+	
+	/**
+	 * Retorna o painel do jogo.</br>
+	 * Caso o painel ainda não tenha sido criado, ele é criado antes de 
+	 *  ser retornado.
+	 * 
+	 * @return				Painel do jogo.
+	 */
 	public GamePanel getGamePanel() {
 		if (this.gamePanel == null)
 			this.gamePanel = new GamePanel(this);

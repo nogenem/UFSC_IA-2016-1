@@ -2,6 +2,7 @@ package core;
 
 import java.util.Arrays;
 
+// Botar o lastMove no Board? Isso pode gerar problemas depois na recursão da IA...
 public class Board {
 	
 	public static final char NO_VAL = '.';
@@ -18,23 +19,52 @@ public class Board {
 		this.board = new char[this.size][this.size];
 	}
 	
+	/**
+	 * Retorna o valor da posição especificada.
+	 * 
+	 * @param x			Valor x da posição que se quer o valor.
+	 * @param y			Valor y da posição que se quer o valor.
+	 * @return			Valor da posição (x, y).
+	 */
 	public char getValue(int x, int y){
 		return this.board[y][x];
 	}
 	
+	/**
+	 * Atualiza o valor da posição especificada.
+	 * 
+	 * @param x			Valor x da posição que se quer atualizar o valor.
+	 * @param y			Valor y da posição que se quer atualizar o valor.
+	 * @param value		Valor que se quer por na posição (x, y).
+	 */
 	public void setValue(int x, int y, char value){
 		this.board[y][x] = value;
 	}
 	
+	/**
+	 * Reseta o tabuleiro limpando ele.
+	 */
 	public void reset(){
 		cleanBoard();
 	}
 	
+	/**
+	 * Limpa o tabuleiro colocando todos os valores
+	 *  como <b>Board.NO_VAL</b>.
+	 */
 	private void cleanBoard(){
 		for(int i = 0; i<this.size; i++)
 			Arrays.fill(this.board[i], Board.NO_VAL);
 	}
 	
+	/**
+	 * Retorna o estado atual do tabuleiro.
+	 * 
+	 * @param lastMove			Ultimo movimento realizado.
+	 * @return					<b>Board.BLACK</b> ou <b>Board.WHITE</b> caso houver um vencedor,</br>
+	 * 							<b>Board.TIE_VAL</b> caso deu empate e</br>
+	 * 							<b>Board.NO_VAL</b> caso contrario.
+	 */
 	public char checkBoardState(Move lastMove){
 		int x = lastMove.getPos().x, 
 			y = lastMove.getPos().y;

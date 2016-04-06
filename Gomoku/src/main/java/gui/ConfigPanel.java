@@ -17,6 +17,10 @@ public class ConfigPanel extends JPanel implements ItemListener {
 	private JComboBox<String> gameType;//Multiplayer, Single Player
 	private JComboBox<String> whomBegins;//IA, User
 	
+	/**
+	 * Construtor da classe e também responsável pela criação dos 
+	 *  componentes do painel.
+	 */
 	public ConfigPanel() {
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -54,6 +58,10 @@ public class ConfigPanel extends JPanel implements ItemListener {
 		this.gameType.setSelectedIndex(0);//1
 	}
 	
+	/**
+	 * Habilita ou desabilita a comboBox para escolher se a IA começa jogando
+	 *  dependendo do tipo de jogo escolhido pelo usuário.
+	 */
 	public void itemStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
 			if(event.getItem().toString() == "Multiplayer"){

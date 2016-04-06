@@ -48,6 +48,12 @@ public class GamePanel extends JPanel {
 		addMouseListener(new GomokuListener());
 	}
 	
+	/**
+	 * Função que inicia um novo jogo.
+	 * 
+	 * @param isMultiplayer			O jogo sera multiplayer?
+	 * @param iaBegins				A IA vai começar jogando?
+	 */
 	public void init(boolean isMultiplayer, boolean iaBegins){
     	this.isMultiplayer = isMultiplayer;
 		this.iaBegins = iaBegins;
@@ -60,7 +66,17 @@ public class GamePanel extends JPanel {
 			this.canPlayerInteract = true;
     }
 	
+	/**
+	 * Classe interna para gerenciar os eventos de mouse
+	 *  gerados pelo usuário.
+	 */
 	class GomokuListener extends MouseAdapter {
+		
+		/**
+		 * Calcula o valor de <b>x</b> e <b>y</b> no tabuleiro e 
+		 *  efetua a jogada do usuário nesta posição.</br>
+		 * Caso o jogo seja Single Player, efetua também a jogada da IA.
+		 */
 		public void mouseReleased(MouseEvent e) {
 			if(!canPlayerInteract) return;
 
@@ -83,8 +99,7 @@ public class GamePanel extends JPanel {
 		    	if(!isMultiplayer){
 		    		canPlayerInteract = false;
 		    		
-		    		Move move = state.getIaMove();
-		    		state.playPiece(move);
+		    		state.iaPerformMove();
 		    		repaint();
 		    		
 		    		if(checkVictory())
@@ -96,6 +111,13 @@ public class GamePanel extends JPanel {
 		}    
     }
 	
+	/**
+	 * Função responsável por checar e informar ao usuário se
+	 *  houve algum vencedor ou se o jogo empatou.
+	 * 
+	 * @return				<b>TRUE</b> caso algum player tenha ganho ou tenha terminado em empate,
+	 * 						<b>FALSE</b> caso contrário.
+	 */
 	public boolean checkVictory(){
 		char vic = state.checkVitory();
     	if(vic != Board.NO_VAL){
@@ -114,6 +136,11 @@ public class GamePanel extends JPanel {
     	return false;
 	}
 	
+	/**
+	 * Pinta o frame com uma cor de madeira, desenha as linhas 
+	 *  verticais e horizontais do tabuleiro e desenha todas as 
+	 *  peças ja jogadas.
+	 */
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

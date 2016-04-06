@@ -44,6 +44,14 @@ public class Move {
 		return true;
 	}
 	
+	/**
+	 * Verifica se a posição passada é igual a posição
+	 *  interna.
+	 * 
+	 * @param pos			Posição a ser verificada.
+	 * @return				<b>TRUE</b> caso as posições sejam iguais, 
+	 * 						<b>FALSE</b> caso contrario.
+	 */
 	public boolean isEqualPos(Point pos){
 		if(this.pos == null && pos != null)
 			return false;
@@ -51,6 +59,15 @@ public class Move {
 			return this.pos.equals(pos);
 	}
 	
+	/**
+	 * Verifica se a posição passada é igual a posição
+	 *  interna.
+	 * 
+	 * @param x				Valor x da posição a ser verificada.
+	 * @param y				Valor y da posição a ser verificada.
+	 * @return				<b>TRUE</b> caso as posições sejam iguais, 
+	 * 						<b>FALSE</b> caso contrario.
+	 */
 	public boolean isEqualPos(int x, int y){
 		Point pos = new Point(x, y);
 		if(this.pos == null && pos != null)
