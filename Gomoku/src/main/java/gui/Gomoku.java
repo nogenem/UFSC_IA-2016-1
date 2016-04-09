@@ -69,9 +69,9 @@ public class Gomoku extends JFrame implements ActionListener {
 		setLocationRelativeTo(null); //centraliza a window
 
 		String whomBegins = getConfigPanel().getWhomBegins();
-		String gameType = getConfigPanel().getGameType();
+		String gameMode = getConfigPanel().getGameMode();
 
-		getGamePanel().init(gameType == "Multiplayer", whomBegins == "IA");
+		getGamePanel().init(gameMode == "Multiplayer", whomBegins == "IA");
 	}
 	
 	/**

@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 
 import core.Board;
 import core.GomokuState;
-import core.Move;
 
 /**
  *	Arquivo base:
@@ -64,6 +63,10 @@ public class GamePanel extends JPanel {
 		state.init(tmp);
 		if(tmp)
 			this.canPlayerInteract = true;
+		
+		if(!isMultiplayer)
+			JOptionPane.showMessageDialog(parent, "Este modo de jogo ainda não esta funcionando!", 
+						"AVISO", JOptionPane.INFORMATION_MESSAGE);
     }
 	
 	/**

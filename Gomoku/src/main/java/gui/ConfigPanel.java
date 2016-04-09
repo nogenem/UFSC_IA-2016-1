@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ConfigPanel extends JPanel implements ItemListener {
 	
-	private JComboBox<String> gameType;//Multiplayer, Single Player
+	private JComboBox<String> gameMode;//Multiplayer, Single Player
 	private JComboBox<String> whomBegins;//IA, User
 	
 	/**
@@ -32,7 +32,7 @@ public class ConfigPanel extends JPanel implements ItemListener {
 	    c.insets = new Insets(2, 2, 2, 2);
 	    c.anchor = GridBagConstraints.EAST;
 	    
-	    add(new JLabel("Tipo de jogo:"), c);
+	    add(new JLabel("Modo de jogo:"), c);
 	    add(new JLabel("Quem come\u00E7a?:"), c);
 	    
 	    c.gridx = 1;
@@ -41,10 +41,10 @@ public class ConfigPanel extends JPanel implements ItemListener {
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.anchor = GridBagConstraints.CENTER;
 	    
-		this.gameType = new JComboBox<String>();
-		this.gameType.setModel(new DefaultComboBoxModel<String>(new String[] {"Multiplayer", "Single Player"}));
-		this.gameType.addItemListener(this);
-		add(this.gameType, c);
+		this.gameMode = new JComboBox<String>();
+		this.gameMode.setModel(new DefaultComboBoxModel<String>(new String[] {"Multiplayer", "Single Player"}));
+		this.gameMode.addItemListener(this);
+		add(this.gameMode, c);
 		
 		c.gridx = 1;
 	    c.gridy = GridBagConstraints.RELATIVE;
@@ -55,7 +55,7 @@ public class ConfigPanel extends JPanel implements ItemListener {
 		this.whomBegins.setEnabled(false);
 		add(this.whomBegins, c);
 		
-		this.gameType.setSelectedIndex(0);//1
+		this.gameMode.setSelectedIndex(0);//1
 	}
 	
 	/**
@@ -73,8 +73,8 @@ public class ConfigPanel extends JPanel implements ItemListener {
 	}
 	
 	// ------- Getters and Setters ------- \\
-	public String getGameType(){
-		return (String) this.gameType.getSelectedItem();
+	public String getGameMode(){
+		return (String) this.gameMode.getSelectedItem();
 	}
 	
 	public String getWhomBegins(){
