@@ -1,16 +1,17 @@
 package core;
 
+
+/*
+ * VER PQ TA DEMORANDO TANTO
+ * VER O TRAB DO BUDA, A PARTE DE THREAD
+ */
 public class GomokuState {
 	
 	private Board board;
 	private char currentPlayer;
-	private IA ia;
-	private Move lastMove;
 	
 	public GomokuState(int size) {
 		board = new Board(size);
-		ia = new IA();
-		lastMove = new Move();
 	}
 	
 	/**
@@ -19,24 +20,11 @@ public class GomokuState {
 	 * 
 	 * @param iaBegins			A IA começa jogando?
 	 */
-	public void init(boolean iaBegins){
+	public void init(){
 		// Peça preta sempre começa
 		currentPlayer = Board.BLACK;
 		
 		this.board.reset();
-		
-		this.ia.setIaPlayer(iaBegins ? Board.BLACK : Board.WHITE);
-		if(iaBegins)
-			this.iaPerformMove();
-	}
-	
-	/**
-	 * Utiliza o tabuleiro atual do jogo para realizar 
-	 *  o melhor movimento possível para a IA. 
-	 */
-	public void iaPerformMove(){
-		Move m = ia.getBestMove(this.board);
-		this.playPiece(m);
 	}
 	
 	/**
@@ -48,7 +36,7 @@ public class GomokuState {
 	 * 					<b>Board.NO_VAL</b> caso contrario.
 	 */
 	public char checkVitory(){
-		char gameState = this.board.checkBoardState(this.lastMove);
+		char gameState = this.board.checkBoardState();
 		return gameState;
 	}
 	
@@ -86,13 +74,13 @@ public class GomokuState {
 		// Atualização posição
 		this.board.setValue(x, y, this.currentPlayer);
 		
-		// Atualização ultima jogada
-		this.lastMove.setPlayer(currentPlayer);
-		this.lastMove.setPos(x, y);
-		
 		// Atualização proximo jogador
 		this.currentPlayer = this.currentPlayer == Board.BLACK ? 
 				Board.WHITE : Board.BLACK;
+	}
+	
+	public Board getBoard(){
+		return this.board;
 	}
 
 }

@@ -55,7 +55,7 @@ public class ConfigPanel extends JPanel implements ItemListener {
 		this.whomBegins.setEnabled(false);
 		add(this.whomBegins, c);
 		
-		this.gameMode.setSelectedIndex(0);//1
+		this.gameMode.setSelectedIndex(1);//1
 	}
 	
 	/**

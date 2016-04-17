@@ -13,7 +13,7 @@ public class Move {
 	}
 	
 	public Move(int x, int y) {
-		this(x, y, Board.NO_VAL);
+		this(x, y, Board.NO_VAL, 0);
 	}
 	
 	public Move(int x, int y, char player){
@@ -74,6 +74,15 @@ public class Move {
 			return false;
 		else
 			return this.pos.equals(pos);
+	}
+	
+	@Override
+	public String toString() {
+		return pos.toString() + " - Player: " +player+ " - Score: " +score;
+	}
+	
+	public Move copy() {
+		return new Move(this.pos.x, this.pos.y, this.player, this.score);
 	}
 
 	// ------- Getters and Setters ------- \\

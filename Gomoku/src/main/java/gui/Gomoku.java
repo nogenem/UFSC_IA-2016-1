@@ -3,12 +3,16 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import core.Board;
 
 @SuppressWarnings("serial")
 public class Gomoku extends JFrame implements ActionListener {
@@ -31,7 +35,7 @@ public class Gomoku extends JFrame implements ActionListener {
 
 		setVisible(true);
 	}
-
+	
 	public static void main(String[] args) {
 		new Gomoku();
 	}

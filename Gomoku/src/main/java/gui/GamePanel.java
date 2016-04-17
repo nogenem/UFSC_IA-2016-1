@@ -14,7 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import core.Board;
+import core.Computer;
 import core.GomokuState;
+import core.Move;
 
 /**
  *	Arquivo base:
@@ -28,9 +30,10 @@ public class GamePanel extends JPanel {
 	
 	private final int MARGIN = 5;
     private final double PIECE_FRAC = 0.9;
-    private final int size = 15;
+    private final int size = 7;//15
     
     private GomokuState state;
+    private Computer comp;
     private Gomoku parent;
 
     private boolean isMultiplayer;
@@ -39,8 +42,10 @@ public class GamePanel extends JPanel {
     
 	public GamePanel(Gomoku parent) {
 		super();
+		
 		this.parent = parent;
 		this.state = new GomokuState(this.size);
+		this.comp = null;
 		this.isMultiplayer = false;
 		this.iaBegins = false;
 		this.canPlayerInteract = false;
@@ -55,18 +60,14 @@ public class GamePanel extends JPanel {
 	 */
 	public void init(boolean isMultiplayer, boolean iaBegins){
     	this.isMultiplayer = isMultiplayer;
-		this.iaBegins = iaBegins;
+		this.iaBegins = (!isMultiplayer && iaBegins);
+		this.canPlayerInteract = !this.iaBegins;
 		
-		boolean tmp = (!isMultiplayer && iaBegins);//ia realmente começa?
-		this.canPlayerInteract = !tmp;
-
-		state.init(tmp);
-		if(tmp)
-			this.canPlayerInteract = true;
-		
+		state.init();
 		if(!isMultiplayer)
-			JOptionPane.showMessageDialog(parent, "Este modo de jogo ainda não esta funcionando!", 
-						"AVISO", JOptionPane.INFORMATION_MESSAGE);
+			comp = new Computer(this, this.iaBegins);
+		else
+			comp = null;
     }
 	
 	/**
@@ -96,20 +97,12 @@ public class GamePanel extends JPanel {
 		    		&& state.getPiece(x, y) == Board.NO_VAL) {
 		    	state.playPiece(x, y);
 		    	repaint();
+		    	
 		    	if(checkVictory())
 		    		return;
 		    	
-		    	if(!isMultiplayer){
-		    		canPlayerInteract = false;
-		    		
-		    		state.iaPerformMove();
-		    		repaint();
-		    		
-		    		if(checkVictory())
-		    			return;
-		    		
-		    		canPlayerInteract = true;
-		    	}
+		    	if(!isMultiplayer)
+		    		comp.resume();
 		    }
 		}    
     }
@@ -133,6 +126,8 @@ public class GamePanel extends JPanel {
     		case Board.TIE_VAL:
     			JOptionPane.showMessageDialog(parent, "O jogo empatou!");
     		}
+    		if(!isMultiplayer)
+    			comp.gameOver();
     		parent.gameOver();
     		return true;
     	}
@@ -192,6 +187,20 @@ public class GamePanel extends JPanel {
 				}
 		    }
     	}
+	}
+	
+	public GomokuState getState(){
+		return this.state;
+	}
+	
+	public void iaPerformMove(Move m){
+		state.playPiece(m);
+		repaint();
+		
+		if(checkVictory())
+			return;
+		
+		canPlayerInteract = true;
 	}
 
 }
