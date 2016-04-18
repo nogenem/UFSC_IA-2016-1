@@ -128,23 +128,23 @@ public class CalcScore {
 		twosScore.put("YX\\.X\\.", 3);*/
 		
 		// v2
-		twosScore.put("YXX", 1);
-		twosScore.put("XXY", 1);
-		twosScore.put("\\.XX", 3);
-		twosScore.put("XX\\.", 3);
-		twosScore.put("YX\\.X", 2);
-		twosScore.put("X\\.XY", 2);
-		twosScore.put("X\\.X\\.", 4);
-		twosScore.put("\\.X\\.X", 4);
+		twosScore.put("YXX", 		1);
+		twosScore.put("XXY", 		1);
+		twosScore.put("\\.XX", 		3);
+		twosScore.put("XX\\.", 		3);
+		twosScore.put("YX\\.X", 	2);
+		twosScore.put("X\\.XY", 	2);
+		twosScore.put("X\\.X\\.", 	4);
+		twosScore.put("\\.X\\.X", 	4);
 		
-		twosScore.put("XYY", -1);
-		twosScore.put("YYX", -1);
-		twosScore.put("\\.YY", -3);
-		twosScore.put("YY\\.", -3);
-		twosScore.put("XY\\.Y", -2);
-		twosScore.put("Y\\.YX", -2);
-		twosScore.put("Y\\.Y\\.", -4);
-		twosScore.put("\\.Y\\.Y", -4);
+		twosScore.put("XYY", 		-1);
+		twosScore.put("YYX", 		-1);
+		twosScore.put("\\.YY", 		-3);
+		twosScore.put("YY\\.", 		-3);
+		twosScore.put("XY\\.Y", 	-2);
+		twosScore.put("Y\\.YX", 	-2);
+		twosScore.put("Y\\.Y\\.", 	-4);
+		twosScore.put("\\.Y\\.Y", 	-4);
 		
 		// v3
 		/*twosScore.put("YXXY", 1);
@@ -190,31 +190,31 @@ public class CalcScore {
 		threesScore.put("YXX\\.X\\.", 4);*/
 		
 		// v2
-		threesScore.put("YXXX", 1);
-		threesScore.put("XXXY", 1);
-		threesScore.put("\\.XXX", 3);
-		threesScore.put("XXX\\.", 3);
-		threesScore.put("YX\\.XX", 2);
-		threesScore.put("X\\.XXY", 2);
-		threesScore.put("\\.X\\.XX", 4);
-		threesScore.put("X\\.XX\\.", 4);
-		threesScore.put("YXX\\.X", 2);
-		threesScore.put("XX\\.XY", 2);
-		threesScore.put("\\.XX\\.X", 4);
-		threesScore.put("XX\\.X\\.", 4);
+		threesScore.put("YXXX", 		1);
+		threesScore.put("XXXY", 		1);
+		threesScore.put("\\.XXX", 		3);
+		threesScore.put("XXX\\.", 		3);
+		threesScore.put("YX\\.XX", 		2);
+		threesScore.put("X\\.XXY", 		2);
+		threesScore.put("\\.X\\.XX", 	4);
+		threesScore.put("X\\.XX\\.", 	4);
+		threesScore.put("YXX\\.X", 		2);
+		threesScore.put("XX\\.XY", 		2);
+		threesScore.put("\\.XX\\.X", 	4);
+		threesScore.put("XX\\.X\\.", 	4);
 		
-		threesScore.put("XYYY", -1);
-		threesScore.put("YYYX", -1);
-		threesScore.put("\\.YYY", -3);
-		threesScore.put("YYY\\.", -3);
-		threesScore.put("XY\\.YY", -2);
-		threesScore.put("Y\\.YYX", -2);
-		threesScore.put("\\.Y\\.YY", -4);
-		threesScore.put("Y\\.YY\\.", -4);
-		threesScore.put("XYY\\.Y", -2);
-		threesScore.put("YY\\.YX", -2);
-		threesScore.put("\\.YY\\.Y", -4);
-		threesScore.put("YY\\.Y\\.", -4);
+		threesScore.put("XYYY", 		-1);
+		threesScore.put("YYYX", 		-1);
+		threesScore.put("\\.YYY", 		-3);
+		threesScore.put("YYY\\.", 		-3);
+		threesScore.put("XY\\.YY", 		-2);
+		threesScore.put("Y\\.YYX", 		-2);
+		threesScore.put("\\.Y\\.YY", 	-4);
+		threesScore.put("Y\\.YY\\.", 	-4);
+		threesScore.put("XYY\\.Y", 		-2);
+		threesScore.put("YY\\.YX", 		-2);
+		threesScore.put("\\.YY\\.Y", 	-4);
+		threesScore.put("YY\\.Y\\.", 	-4);
 		
 		// v3
 		/*threesScore.put("YXXXY", 1);
@@ -261,39 +261,39 @@ public class CalcScore {
 		foursScore.put("YXXX\\.X\\.", 4);*/
 		
 		// v2
-		foursScore.put("YXXXX", 1);
-		foursScore.put("XXXXY", 1);
-		foursScore.put("\\.XXXX", 3);
-		foursScore.put("XXXX\\.", 3);
-		foursScore.put("YX\\.XXX", 2);
-		foursScore.put("X\\.XXXY", 2);
-		foursScore.put("\\.X\\.XXX", 5);
-		foursScore.put("X\\.XXX\\.", 5);
-		foursScore.put("YXX\\.XX", 4);
-		foursScore.put("XX\\.XXY", 4);
-		foursScore.put("\\.XX\\.XX", 5);
-		foursScore.put("XX\\.XX\\.", 5);
-		foursScore.put("YXXX\\.X", 4);
-		foursScore.put("XXX\\.XY", 4);
-		foursScore.put("\\.XXX\\.X", 5);
-		foursScore.put("XXX\\.X\\.", 5);
+		foursScore.put("YXXXX", 		1);
+		foursScore.put("XXXXY", 		1);
+		foursScore.put("\\.XXXX", 		3);
+		foursScore.put("XXXX\\.", 		3);
+		foursScore.put("YX\\.XXX", 		2);
+		foursScore.put("X\\.XXXY", 		2);
+		foursScore.put("\\.X\\.XXX", 	5);
+		foursScore.put("X\\.XXX\\.", 	5);
+		foursScore.put("YXX\\.XX", 		4);
+		foursScore.put("XX\\.XXY", 		4);
+		foursScore.put("\\.XX\\.XX", 	5);
+		foursScore.put("XX\\.XX\\.", 	5);
+		foursScore.put("YXXX\\.X", 		4);
+		foursScore.put("XXX\\.XY", 		4);
+		foursScore.put("\\.XXX\\.X", 	5);
+		foursScore.put("XXX\\.X\\.", 	5);
 		
-		foursScore.put("XYYYY", -1);
-		foursScore.put("YYYYX", -1);
-		foursScore.put("\\.YYYY", -3);
-		foursScore.put("YYYY\\.", -3);
-		foursScore.put("XY\\.YYY", -2);
-		foursScore.put("Y\\.YYYX", -2);
-		foursScore.put("\\.Y\\.YYY", -5);
-		foursScore.put("Y\\.YYY\\.", -5);
-		foursScore.put("XYY\\.YY", -4);
-		foursScore.put("YY\\.YYX", -4);
-		foursScore.put("\\.YY\\.YY", -5);
-		foursScore.put("YY\\.YY\\.", -5);
-		foursScore.put("XYYY\\.Y", -4);
-		foursScore.put("YYY\\.YX", -4);
-		foursScore.put("\\.YYY\\.Y", -5);
-		foursScore.put("YYY\\.Y\\.", -5);
+		foursScore.put("XYYYY", 		-1);
+		foursScore.put("YYYYX", 		-1);
+		foursScore.put("\\.YYYY", 		-3);
+		foursScore.put("YYYY\\.", 		-3);
+		foursScore.put("XY\\.YYY", 		-2);
+		foursScore.put("Y\\.YYYX",	 	-2);
+		foursScore.put("\\.Y\\.YYY", 	-5);
+		foursScore.put("Y\\.YYY\\.", 	-5);
+		foursScore.put("XYY\\.YY", 		-4);
+		foursScore.put("YY\\.YYX", 		-4);
+		foursScore.put("\\.YY\\.YY", 	-5);
+		foursScore.put("YY\\.YY\\.", 	-5);
+		foursScore.put("XYYY\\.Y", 		-4);
+		foursScore.put("YYY\\.YX", 		-4);
+		foursScore.put("\\.YYY\\.Y", 	-5);
+		foursScore.put("YYY\\.Y\\.", 	-5);
 		
 		// v3
 		/*foursScore.put("YXXXXY", 1);

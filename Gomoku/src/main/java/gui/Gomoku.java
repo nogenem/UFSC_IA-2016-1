@@ -1,18 +1,20 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Point;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import core.Board;
 
 @SuppressWarnings("serial")
 public class Gomoku extends JFrame implements ActionListener {
@@ -25,6 +27,8 @@ public class Gomoku extends JFrame implements ActionListener {
 	private GamePanel gamePanel;
 	private ConfigPanel configPanel;
 	private JPanel btnsPanel;
+	private JPanel gameStatusPanel;
+	private JLabel gameStatusLbl;
 
 	public Gomoku() {
 		setTitle("Gomoku");
@@ -68,6 +72,7 @@ public class Gomoku extends JFrame implements ActionListener {
 		}
 
 		setSize(this.gameDim);
+		getContentPane().add(getGameStatusPanel(), BorderLayout.NORTH);
 		getContentPane().add(getGamePanel(), BorderLayout.CENTER);
 
 		setLocationRelativeTo(null); //centraliza a window
@@ -91,6 +96,9 @@ public class Gomoku extends JFrame implements ActionListener {
 			showGame();
 		} else if (e.getActionCommand() == "Sair") {
 			System.exit(0);
+		} else if (e.getActionCommand() == "Voltar") {
+			this.gamePanel.stopGame();
+			showConfig();
 		}
 	}
 
@@ -118,6 +126,39 @@ public class Gomoku extends JFrame implements ActionListener {
 			this.btnsPanel = panel;
 		}
 		return this.btnsPanel;
+	}
+	
+	public JPanel getGameStatusPanel(){
+		if(this.gameStatusPanel == null){
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+			
+			Component horizontalStrut = Box.createHorizontalStrut(20);
+			panel.add(horizontalStrut);
+			
+			gameStatusLbl = new JLabel("Game Status");
+			gameStatusLbl.setFont(new Font("Tahoma", Font.BOLD, 11));
+			panel.add(gameStatusLbl);
+			
+			Component horizontalGlue = Box.createHorizontalGlue();
+			panel.add(horizontalGlue);
+			
+			JButton btnVoltar = new JButton("Voltar");
+			btnVoltar.addActionListener(this);
+			panel.add(btnVoltar);
+			
+			Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+			panel.add(horizontalStrut_1);
+			
+			panel.setBackground(new Color(0.925f, 0.670f, 0.34f));
+			
+			this.gameStatusPanel = panel;
+		}
+		return this.gameStatusPanel;
+	}
+	
+	public void setGameStatus(String txt){
+		this.gameStatusLbl.setText(txt);
 	}
 	
 	/**

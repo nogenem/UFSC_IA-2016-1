@@ -32,9 +32,11 @@ public class Computer implements Runnable {
 	
 	private void play(){
 		Move m = ia.getBestMove( panel.getState().getBoard() );
-		System.out.println(m);
-		panel.iaPerformMove(m);
-		running = false;
+		if(!this.endGame){
+			System.out.println(m);
+			panel.iaPerformMove(m);
+			running = false;
+		}
 	}
 	
 	public void gameOver(){

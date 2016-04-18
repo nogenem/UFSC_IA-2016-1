@@ -82,5 +82,9 @@ public class GomokuState {
 	public Board getBoard(){
 		return this.board;
 	}
+	
+	public char getCurrentPlayer(){
+		return this.currentPlayer;
+	}
 
 }

@@ -8,7 +8,8 @@ public class IA {
 	private char userPlayer;
 	
 	private int count = 0;
-	private final int maxDepth = 3;//5
+	//Na real desce maxDepth+1, ja que o primeiro nivel é feito fora da função alphabeta
+	private final int maxDepth = 2;
 	
 	public IA() {
 		// TODO Auto-generated constructor stub
@@ -36,10 +37,12 @@ public class IA {
 		int bestScore = Integer.MIN_VALUE;
 		board = board.copy();//usa uma cópia para não dar conflito com o repaint
 		
+		count = 0;
 		long inicio = System.currentTimeMillis();
 		
 		ArrayList<Move> moves = board.getAllPossibleMoves(iaPlayer);
 		for(Move m: moves){
+			count++;
 			board.setValue(m);
 			int alpha = alphaBeta(board, userPlayer, bestScore, Integer.MAX_VALUE, maxDepth);
 			board.setValue(m.getPos().x, m.getPos().y, Board.NO_VAL);
@@ -51,15 +54,15 @@ public class IA {
 		}
 		
 		long fim = System.currentTimeMillis();
-		System.out.println("Time: " +(fim-inicio) +"ms");
+		System.out.println("Time: " +(fim-inicio) +"ms - Count: " +count);
 		return bestMove;
 	}
 	
 	private int alphaBeta(Board board, char player, int alpha, int beta, int depth){	
+		count++;
 		if(depth == 0 || isLeaf(board)){
 			int value = board.getBoardValue(iaPlayer, userPlayer); 
 				value *= (depth+1);
-			//System.out.println("Value: " +value+ " - Player: " +player);
 			return value;
 		}
 		

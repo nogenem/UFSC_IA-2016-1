@@ -30,7 +30,7 @@ public class GamePanel extends JPanel {
 	
 	private final int MARGIN = 5;
     private final double PIECE_FRAC = 0.9;
-    private final int size = 7;//15
+    private final int size = 9;//15
     
     private GomokuState state;
     private Computer comp;
@@ -62,6 +62,8 @@ public class GamePanel extends JPanel {
     	this.isMultiplayer = isMultiplayer;
 		this.iaBegins = (!isMultiplayer && iaBegins);
 		this.canPlayerInteract = !this.iaBegins;
+		
+		parent.setGameStatus("Vez do player BLACK.");
 		
 		state.init();
 		if(!isMultiplayer)
@@ -101,9 +103,12 @@ public class GamePanel extends JPanel {
 		    	if(checkVictory())
 		    		return;
 		    	
-		    	if(!isMultiplayer)
+		    	if(!isMultiplayer){
 		    		comp.resume();
+		    		canPlayerInteract = false;
+		    	}
 		    }
+		    parent.setGameStatus("Vez do player " +(state.getCurrentPlayer()==Board.BLACK?"BLACK":"WHITE")+ ".");
 		}    
     }
 	
@@ -200,7 +205,13 @@ public class GamePanel extends JPanel {
 		if(checkVictory())
 			return;
 		
+		parent.setGameStatus("Vez do player " +(state.getCurrentPlayer()==Board.BLACK?"BLACK":"WHITE")+ ".");
 		canPlayerInteract = true;
+	}
+	
+	public void stopGame(){
+		if(this.comp != null)
+			this.comp.gameOver();
 	}
 
 }
