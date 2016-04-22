@@ -5,39 +5,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
-/* Alguns dados...
-
--- tempo ms - score [pos]
-com start v3
-   7750 - 2240 [centro]
-   10455 - 2260 [centro.x-1]
-sem start v3
-   7729 - 2240 [centro]
-   10462 - 2260 [centro.x-1]
-
-com start v2
-   15576 - 4520 [centro]
-   23025 - 4560 [centro.x+1]
-sem start v2
-   37595 - 2255 [centro]
-   22990 - 2280 [centro.x+1]
+/**
+ * Classe responsável por fazer o calculo básico da heurística do tabuleiro passado a ela.
+ * 
+ * @author Gilney N. Mathias
  */
 public class CalcScore {
 	
+	//map contendo os regEx das duplas e os seus valores
 	private HashMap<String, Integer> twosScore;
+	//regEx completo juntando todos os regExs do map acima com o operador de '|', OU.
 	private String twosRegEx = "";
-	private final int maxValueTwos = 896;//448;
+	//estimativa do valor maximo que as duplas podem atingir
+	private final int maxValueTwos = 112 * 7;//(225/2) * maxValue
 	
+	//map contendo os regEx das triplas e os seus valores
 	private HashMap<String, Integer> threesScore;
+	//regEx completo juntando todos os regExs do map acima com o operador de '|', OU.
 	private String threesRegEx = "";
-	private final int maxValueThrees = 67_800;//33_975;
+	//estimativa do valor maximo que as triplas podem atingir
+	private final int maxValueThrees = 75 * maxValueTwos * 8;//(225/3) * maxTwos * maxValue
 	
+	//map contendo os regEx das quadras e os seus valores
 	private HashMap<String, Integer> foursScore;
+	//regEx completo juntando todos os regExs do map acima com o operador de '|', OU.
 	private String foursRegEx = "";	
-	private final int maxValueFours = 3_797_360;//1_902_936;
+	//estimativa do valor maximo que as quadras podem atingir
+	private final int maxValueFours = 56 * maxValueThrees * 7;//(225/4) * maxThrees * maxValue
 	
-	private final int valueFives = 3_866_057;//1_937_360;
+	//valor de uma quíntupla
+	private final int valueFives = (maxValueTwos+maxValueThrees+maxValueFours)+100;// Sum(maxTwos, maxThrees, maxFours) + 100
 	
 	public CalcScore() {
 		createTwos();
@@ -45,6 +42,16 @@ public class CalcScore {
 		createFours();
 	}
 	
+	/**
+	 * Retorna a soma dos valores encontrados para duplas, triplas, quadras
+	 *  e quintuplas neste tabuleiro.
+	 * 
+	 * @param possibilities			String representando todas as possiveis linhas, colunas
+	 * 								 e diagonais do tabuleiro.
+	 * @param ia					Valor que representa a IA neste jogo.
+	 * @param user					Valor que representa o usuário neste jogo.
+	 * @return						A heurística básica do tabuleiro.
+	 */
 	public int getPossibilitiesSum(String possibilities, char ia, char user){
 		// Pega a soma de sequencias de 2, 3 e 4 peças
 		int value = getTwosSum(possibilities, ""+ia, ""+user) + 
@@ -66,260 +73,186 @@ public class CalcScore {
 		return value;
 	}
 	
-	private int getTwosSum(String possibilities, String player, String otherPlayer){
+	/**
+	 * Faz a soma dos valores das duplas deste tabuleiro usando o regEx e o HashMap
+	 *  das duplas.
+	 * 
+	 * @param possibilities			String representando todas as possiveis linhas, colunas
+	 * 								 e diagonais do tabuleiro.
+	 * @param ia					Valor que representa a IA neste jogo.
+	 * @param user					Valor que representa o usuário neste jogo.
+	 * @return						Valor das duplas deste tabuleiro.
+	 */
+	private int getTwosSum(String possibilities, String ia, String user){
 		int value = 0;
-		Pattern p = Pattern.compile(twosRegEx.replaceAll("X", player).replaceAll("Y", otherPlayer), Pattern.MULTILINE);
+		Pattern p = Pattern.compile(twosRegEx.replaceAll("X", ia).replaceAll("Y", user), Pattern.MULTILINE);
 		Matcher m = p.matcher(possibilities);
 		
-		int start = 0;
-		while(m.find(start)){
-			String v = m.group().replaceAll(player, "X").replaceAll(otherPlayer, "Y").replaceAll("\\.", "\\\\.");
-			//System.out.print(v + " | ");
+		while(m.find()){
+			String v = m.group().replaceAll(ia, "X").replaceAll(user, "Y").replaceAll("\\.", "\\\\.");
 			value += twosScore.get(v);
-			start = m.start()+1;
 		}
-		//System.out.println();
 		return value;
 	}
 	
-	private int getThreesSum(String possibilities, String player, String otherPlayer){
+	/**
+	 * Faz a soma dos valores das triplas deste tabuleiro usando o regEx e o HashMap
+	 *  das triplas.
+	 * 
+	 * @param possibilities			String representando todas as possiveis linhas, colunas
+	 * 								 e diagonais do tabuleiro.
+	 * @param ia					Valor que representa a IA neste jogo.
+	 * @param user					Valor que representa o usuário neste jogo.
+	 * @return						Valor das triplas deste tabuleiro.
+	 */
+	private int getThreesSum(String possibilities, String ia, String user){
 		int value = 0;
-		Pattern p = Pattern.compile(threesRegEx.replaceAll("X", player).replaceAll("Y", otherPlayer), Pattern.MULTILINE);
+		Pattern p = Pattern.compile(threesRegEx.replaceAll("X", ia).replaceAll("Y", user), Pattern.MULTILINE);
 		Matcher m = p.matcher(possibilities);
 		
-		int start = 0, tmp = 0;
-		while(m.find(start)){
-			String v = m.group().replaceAll(player, "X").replaceAll(otherPlayer, "Y").replaceAll("\\.", "\\\\.");
-			//System.out.print(v + " | ");
-			tmp = threesScore.get(v);
-			value += tmp < 0 ? -maxValueTwos+tmp : maxValueTwos+tmp;
-			start = m.start()+1;
+		while(m.find()){
+			String v = m.group().replaceAll(ia, "X").replaceAll(user, "Y").replaceAll("\\.", "\\\\.");
+			value += threesScore.get(v);
 		}
-		//System.out.println();
 		return value;
 	}
 	
-	private int getFoursSum(String possibilities, String player, String otherPlayer){
+	/**
+	 * Faz a soma dos valores das quadras deste tabuleiro usando o regEx e o HashMap
+	 *  das quadras.
+	 * 
+	 * @param possibilities			String representando todas as possiveis linhas, colunas
+	 * 								 e diagonais do tabuleiro.
+	 * @param ia					Valor que representa a IA neste jogo.
+	 * @param user					Valor que representa o usuário neste jogo.
+	 * @return						Valor das quadras deste tabuleiro.
+	 */
+	private int getFoursSum(String possibilities, String ia, String user){
 		int value = 0;
-		Pattern p = Pattern.compile(foursRegEx.replaceAll("X", player).replaceAll("Y", otherPlayer), Pattern.MULTILINE);
+		Pattern p = Pattern.compile(foursRegEx.replaceAll("X", ia).replaceAll("Y", user), Pattern.MULTILINE);
 		Matcher m = p.matcher(possibilities);
 		
-		int start = 0, tmp = 0;
-		while(m.find(start)){
-			String v = m.group().replaceAll(player, "X").replaceAll(otherPlayer, "Y").replaceAll("\\.", "\\\\.");
-			//System.out.print(v + " | ");
-			tmp = foursScore.get(v);
-			value += tmp < 0 ? -maxValueThrees+tmp : maxValueThrees+tmp;
-			start = m.start()+1;
+		while(m.find()){
+			String v = m.group().replaceAll(ia, "X").replaceAll(user, "Y").replaceAll("\\.", "\\\\."); 
+			value += foursScore.get(v);
 		}
-		//System.out.println("\n");
 		return value;
 	}
 	
+	/**
+	 * Preenche o HashMap e cria o regEx completo das duplas.
+	 */
 	private void createTwos(){
 		twosScore = new HashMap<>();
+
+		// geral [pc]
+		twosScore.put("YXXY", 			1);
+		twosScore.put("\\.XX\\.",		7);
+		twosScore.put("\\.XXY", 		3);
+		twosScore.put("YXX\\.", 		3);
+		twosScore.put("\\.X\\.X\\.",	6);
 		
-		// v1
-		/*twosScore.put("YXX\\.", 2);
-		twosScore.put("YX\\.XY", 1);
-		twosScore.put("\\.XXY", 2);
-		twosScore.put("\\.XX\\.", 4);
-		twosScore.put("\\.X\\.XY", 3);
-		twosScore.put("YX\\.X\\.", 3);*/
+		// cantos [human]
+		twosScore.put("YXX", 			1);
+		twosScore.put("XXY", 			1);
+		twosScore.put("\\.XX", 			2);
+		twosScore.put("XX\\.", 			2);
+		twosScore.put("XX", 			1);
 		
-		// v2
-		twosScore.put("YXX", 		1);
-		twosScore.put("XXY", 		1);
-		twosScore.put("\\.XX", 		3);
-		twosScore.put("XX\\.", 		3);
-		twosScore.put("YX\\.X", 	2);
-		twosScore.put("X\\.XY", 	2);
-		twosScore.put("X\\.X\\.", 	4);
-		twosScore.put("\\.X\\.X", 	4);
+		// geral [pc]
+		twosScore.put("XYYX", 			-1);
+		twosScore.put("\\.YY\\.",		-7);
+		twosScore.put("\\.YYX", 		-3);
+		twosScore.put("XYY\\.", 		-3);
+		twosScore.put("\\.Y\\.Y\\.",	-6);
 		
-		twosScore.put("XYY", 		-1);
-		twosScore.put("YYX", 		-1);
-		twosScore.put("\\.YY", 		-3);
-		twosScore.put("YY\\.", 		-3);
-		twosScore.put("XY\\.Y", 	-2);
-		twosScore.put("Y\\.YX", 	-2);
-		twosScore.put("Y\\.Y\\.", 	-4);
-		twosScore.put("\\.Y\\.Y", 	-4);
-		
-		// v3
-		/*twosScore.put("YXXY", 1);
-		twosScore.put("\\.XX\\.", 3);
-		twosScore.put("YXX\\.", 2);
-		twosScore.put("\\.XXY", 2);
-		
-		twosScore.put("XYYX", -1);
-		twosScore.put("\\.YY\\.", -3);
-		twosScore.put("XYY\\.", -2);
-		twosScore.put("\\.YYX", -2);*/
-		
-		// v4
-		/*twosScore.put("YXX", 1);
-		twosScore.put("XXY", 1);
-		twosScore.put("\\.XX", 3);
-		twosScore.put("XX\\.", 3);
-		
-		twosScore.put("XYY", -1);
-		twosScore.put("YYX", -1);
-		twosScore.put("\\.YY", -3);
-		twosScore.put("YY\\.", -3);*/
+		// cantos [human]
+		twosScore.put("XYY", 			-1);
+		twosScore.put("YYX", 			-1);
+		twosScore.put("\\.YY", 			-2);
+		twosScore.put("YY\\.", 			-2);
+		twosScore.put("YY", 			-1);
 		
 		twosRegEx = twosScore.keySet()
-				.stream().collect(Collectors.joining("|"));
-		
-		//System.out.println(twosRegEx);
+				.stream().sorted((e1, e2) -> e2.length() - e1.length())
+				.collect(Collectors.joining("|"));
 	}
 	
+	/**
+	 * Preenche o HashMap e cria o regEx completo das triplas.
+	 */
 	private void createThrees(){
 		threesScore = new HashMap<>();
+
+		// geral [pc]
+		threesScore.put("YXXXY", 		maxValueTwos* 1);
+		threesScore.put("\\.XXX\\.", 	maxValueTwos* 8);//maxValueThrees-1
+		threesScore.put("\\.XXXY", 		maxValueTwos* 3);
+		threesScore.put("YXXX\\.", 		maxValueTwos* 3);
+		threesScore.put("\\.X\\.XX\\.", maxValueTwos* 4);
+		threesScore.put("\\.XX\\.X\\.", maxValueTwos* 4);
 		
-		// v1
-		/*threesScore.put("YXXX\\.", 2);
-		threesScore.put("YXXXY", 1);
-		threesScore.put("YXX\\.XY", 1);
-		threesScore.put("YX\\.XXY", 1);
-		threesScore.put("\\.XXXY", 2);
-		threesScore.put("\\.XXX\\.", 5);
-		threesScore.put("\\.XX\\.X\\.", 3);
-		threesScore.put("\\.X\\.XXY", 4);
-		threesScore.put("YX\\.XX\\.", 5);
-		threesScore.put("YXX\\.X\\.", 4);*/
+		//cantos [pc]
+		threesScore.put("YXXX", 		maxValueTwos* 1);
+		threesScore.put("XXXY", 		maxValueTwos* 1);
+		threesScore.put("\\.XXX", 		maxValueTwos* 2);
+		threesScore.put("XXX\\.", 		maxValueTwos* 2);
+		threesScore.put("XXX", 			maxValueTwos* 1);
 		
-		// v2
-		threesScore.put("YXXX", 		1);
-		threesScore.put("XXXY", 		1);
-		threesScore.put("\\.XXX", 		3);
-		threesScore.put("XXX\\.", 		3);
-		threesScore.put("YX\\.XX", 		2);
-		threesScore.put("X\\.XXY", 		2);
-		threesScore.put("\\.X\\.XX", 	4);
-		threesScore.put("X\\.XX\\.", 	4);
-		threesScore.put("YXX\\.X", 		2);
-		threesScore.put("XX\\.XY", 		2);
-		threesScore.put("\\.XX\\.X", 	4);
-		threesScore.put("XX\\.X\\.", 	4);
+		// geral [human]
+		threesScore.put("XYYYX", 		-(maxValueTwos* 1));
+		threesScore.put("\\.YYY\\.", 	-(maxValueTwos* 8));//maxValueThrees-1
+		threesScore.put("\\.YYYX", 		-(maxValueTwos* 3));
+		threesScore.put("XYYY\\.", 		-(maxValueTwos* 3));
+		threesScore.put("\\.Y\\.YY\\.", -(maxValueTwos* 4));
+		threesScore.put("\\.YY\\.Y\\.", -(maxValueTwos* 4));
 		
-		threesScore.put("XYYY", 		-1);
-		threesScore.put("YYYX", 		-1);
-		threesScore.put("\\.YYY", 		-3);
-		threesScore.put("YYY\\.", 		-3);
-		threesScore.put("XY\\.YY", 		-2);
-		threesScore.put("Y\\.YYX", 		-2);
-		threesScore.put("\\.Y\\.YY", 	-4);
-		threesScore.put("Y\\.YY\\.", 	-4);
-		threesScore.put("XYY\\.Y", 		-2);
-		threesScore.put("YY\\.YX", 		-2);
-		threesScore.put("\\.YY\\.Y", 	-4);
-		threesScore.put("YY\\.Y\\.", 	-4);
-		
-		// v3
-		/*threesScore.put("YXXXY", 1);
-		threesScore.put("\\.XXX\\.", 3);
-		threesScore.put("YXXX\\.", 2);
-		threesScore.put("\\.XXXY", 2);
-		
-		threesScore.put("XYYYX", -1);
-		threesScore.put("\\.YYY\\.", -3);
-		threesScore.put("XYYY\\.", -2);
-		threesScore.put("\\.YYYX", -2);*/
-		
-		// v4
-		/*threesScore.put("YXXX", 1);
-		threesScore.put("XXXY", 1);
-		threesScore.put("\\.XXX", 3);
-		threesScore.put("XXX\\.", 3);
-		
-		threesScore.put("XYYY", -1);
-		threesScore.put("YYYX", -1);
-		threesScore.put("\\.YYY", -3);
-		threesScore.put("YYY\\.", -3);*/
-		
+		//cantos [human]
+		threesScore.put("XYYY", 		-(maxValueTwos* 1));
+		threesScore.put("YYYX", 		-(maxValueTwos* 1));
+		threesScore.put("\\.YYY", 		-(maxValueTwos* 2));
+		threesScore.put("YYY\\.", 		-(maxValueTwos* 2));
+		threesScore.put("YYY", 			-(maxValueTwos* 1));
+
 		threesRegEx = threesScore.keySet()
-				.stream().collect(Collectors.joining("|"));
-		
-		//System.out.println(threesRegEx);
+				.stream().sorted((e1, e2) -> e2.length() - e1.length())
+				.collect(Collectors.joining("|"));
 	}
 	
+	/**
+	 * Preenche o HashMap e cria o regEx completo das quadras.
+	 */
 	private void createFours(){
 		foursScore = new HashMap<>();
-		// v1
-		/*foursScore.put("YXXXX\\.", 2);
-		foursScore.put("YXXX\\.XY", 1);
-		foursScore.put("YXX\\.XXY", 1);
-		foursScore.put("YX\\.XXXY", 2);
-		foursScore.put("\\.XXXXY", 3);
-		foursScore.put("\\.XXXX\\.", 6);
-		foursScore.put("\\.XXX\\.XY", 5);
-		foursScore.put("\\.XX\\.XXY", 4);
-		foursScore.put("\\.X\\.XXXY", 4);
-		foursScore.put("YX\\.XXX\\.", 5);
-		foursScore.put("YXX\\.XX\\.", 4);
-		foursScore.put("YXXX\\.X\\.", 4);*/
+
+		// geral [pc]
+		foursScore.put("YXXXXY", 		maxValueThrees* 1);
+		foursScore.put("\\.XXXX\\.", 	maxValueThrees* 7);
+		foursScore.put("\\.XXXXY", 		maxValueThrees* 3);
+		foursScore.put("YXXXX\\.", 		maxValueThrees* 3);
 		
-		// v2
-		foursScore.put("YXXXX", 		1);
-		foursScore.put("XXXXY", 		1);
-		foursScore.put("\\.XXXX", 		3);
-		foursScore.put("XXXX\\.", 		3);
-		foursScore.put("YX\\.XXX", 		2);
-		foursScore.put("X\\.XXXY", 		2);
-		foursScore.put("\\.X\\.XXX", 	5);
-		foursScore.put("X\\.XXX\\.", 	5);
-		foursScore.put("YXX\\.XX", 		4);
-		foursScore.put("XX\\.XXY", 		4);
-		foursScore.put("\\.XX\\.XX", 	5);
-		foursScore.put("XX\\.XX\\.", 	5);
-		foursScore.put("YXXX\\.X", 		4);
-		foursScore.put("XXX\\.XY", 		4);
-		foursScore.put("\\.XXX\\.X", 	5);
-		foursScore.put("XXX\\.X\\.", 	5);
+		// cantos [human]
+		foursScore.put("YXXXX", 		maxValueThrees* 1);
+		foursScore.put("XXXXY", 		maxValueThrees* 1);
+		foursScore.put("\\.XXXX", 		maxValueThrees* 2);
+		foursScore.put("XXXX\\.", 		maxValueThrees* 2);
+		foursScore.put("XXXX", 			maxValueThrees* 1);
 		
-		foursScore.put("XYYYY", 		-1);
-		foursScore.put("YYYYX", 		-1);
-		foursScore.put("\\.YYYY", 		-3);
-		foursScore.put("YYYY\\.", 		-3);
-		foursScore.put("XY\\.YYY", 		-2);
-		foursScore.put("Y\\.YYYX",	 	-2);
-		foursScore.put("\\.Y\\.YYY", 	-5);
-		foursScore.put("Y\\.YYY\\.", 	-5);
-		foursScore.put("XYY\\.YY", 		-4);
-		foursScore.put("YY\\.YYX", 		-4);
-		foursScore.put("\\.YY\\.YY", 	-5);
-		foursScore.put("YY\\.YY\\.", 	-5);
-		foursScore.put("XYYY\\.Y", 		-4);
-		foursScore.put("YYY\\.YX", 		-4);
-		foursScore.put("\\.YYY\\.Y", 	-5);
-		foursScore.put("YYY\\.Y\\.", 	-5);
+		// geral [pc]
+		foursScore.put("XYYYYX", 		-(maxValueThrees* 1));
+		foursScore.put("\\.YYYY\\.", 	-(maxValueThrees* 7));
+		foursScore.put("\\.YYYYX", 		-(maxValueThrees* 3));
+		foursScore.put("XYYYY\\.", 		-(maxValueThrees* 3));
 		
-		// v3
-		/*foursScore.put("YXXXXY", 1);
-		foursScore.put("\\.XXXX\\.", 3);
-		foursScore.put("\\.XXXXY", 2);
-		foursScore.put("YXXXX\\.", 2);
-		
-		foursScore.put("XYYYYX", -1);
-		foursScore.put("\\.YYYY\\.", -3);
-		foursScore.put("XYYYY\\.", -2);
-		foursScore.put("\\.YYYYX", -2);*/
-		
-		// v4
-		/*foursScore.put("YXXXX", 1);
-		foursScore.put("XXXXY", 1);
-		foursScore.put("\\.XXXX", 3);
-		foursScore.put("XXXX\\.", 3);
-		
-		foursScore.put("XYYYY", -1);
-		foursScore.put("YYYYX", -1);
-		foursScore.put("\\.YYYY", -3);
-		foursScore.put("YYYY\\.", -3);*/
+		// cantos [human]
+		foursScore.put("XYYYY", 		-(maxValueThrees* 1));
+		foursScore.put("YYYYX", 		-(maxValueThrees* 1));
+		foursScore.put("\\.YYYY", 		-(maxValueThrees* 2));
+		foursScore.put("YYYY\\.", 		-(maxValueThrees* 2));
+		foursScore.put("YYYY", 			-(maxValueThrees* 1));
 		
 		foursRegEx = foursScore.keySet()
-				.stream().collect(Collectors.joining("|"));
-		
-		//System.out.println(foursRegEx);
+				.stream().sorted((e1, e2) -> e2.length() - e1.length())
+				.collect(Collectors.joining("|"));
 	}
 }

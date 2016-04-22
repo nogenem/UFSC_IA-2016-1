@@ -8,6 +8,11 @@ enum Direction {
 	UP, RIGHT, DOWN, LEFT
 }
 
+/**
+ * Classe que representa o tabuleiro do jogo.
+ * 
+ * @author Gilney N. Mathias
+ */
 public class Board {
 	
 	public static final char NO_VAL = '.';
@@ -26,29 +31,18 @@ public class Board {
 		this.board = new char[this.size][this.size];
 		this.cs = new CalcScore();
 		this.lastMove = new Move();
+		
+		cleanBoard();
 	}
 	
-	public int getSize(){
-		return this.size;
-	}
-	
-	public Move getLastMove(){
-		return this.lastMove;
-	}
-	
-	public void setLastMove(Move m){
-		this.lastMove = m;
-	}
-	
-	@Override
-	public String toString() {
-		String s = "";
-		for(int y = 0; y<size; y++)
-			s += new String(board[y]) + "\n";
-		return s;
-	}
-	
-	// Spiral de Ulam
+	/**
+	 * Retorna uma lista com todos os movimentos possíveis no tabuleiro.</br>
+	 * Utiliza como base o algoritmo da 'Spiral de Ulam' para percorrer a matriz
+	 *  em forma de espiral começando pelo meio dela.
+	 * 
+	 * @param player			De quem é a vez.
+	 * @return					Lista dos possíveis movimentos.
+	 */
 	public ArrayList<Move> getAllPossibleMoves(char player){
 		ArrayList<Move> moves = new ArrayList<>();
 		
@@ -87,57 +81,12 @@ public class Board {
 		
 		return moves;
 	}
-	
-	/**
-	 * Retorna o valor da posição especificada.
-	 * 
-	 * @param x			Valor x da posição que se quer o valor.
-	 * @param y			Valor y da posição que se quer o valor.
-	 * @return			Valor da posição (x, y).
-	 */
-	public char getValue(int x, int y){
-		return this.board[y][x];
-	}
-	
-	/**
-	 * Atualiza o valor da posição especificada.
-	 * 
-	 * @param x			Valor x da posição que se quer atualizar o valor.
-	 * @param y			Valor y da posição que se quer atualizar o valor.
-	 * @param value		Valor que se quer por na posição (x, y).
-	 */
-	public void setValue(int x, int y, char value){
-		this.board[y][x] = value;
-		lastMove.setPos(x, y);
-		lastMove.setPlayer(value);
-	}
-	
-	public void setValue(Move m){
-		this.board[m.getPos().y][m.getPos().x] = m.getPlayer();
-		lastMove = m;
-	}
-	
-	/**
-	 * Reseta o tabuleiro limpando ele.
-	 */
-	public void reset(){
-		cleanBoard();
-	}
-	
-	/**
-	 * Limpa o tabuleiro colocando todos os valores
-	 *  como <b>Board.NO_VAL</b>.
-	 */
-	private void cleanBoard(){
-		for(int i = 0; i<this.size; i++)
-			Arrays.fill(this.board[i], Board.NO_VAL);
-	}
-	
+
 	/**
 	 * Retorna o estado atual do tabuleiro.
 	 * 
 	 * @return					<b>Board.BLACK</b> ou <b>Board.WHITE</b> caso houver um vencedor,</br>
-	 * 							<b>Board.TIE_VAL</b> caso deu empate e</br>
+	 * 							<b>Board.TIE_VAL</b> caso deu empate ou</br>
 	 * 							<b>Board.NO_VAL</b> caso contrario.
 	 */
 	public char checkBoardState(){
@@ -228,29 +177,54 @@ public class Board {
 		return NO_VAL;
 	}
 	
+	/**
+	 * Retorna a heurística do tabuleiro.</br>
+	 * Caso o tabuleiro seja folha, a heurística equivale ao valor de utilidade.
+	 * 
+	 * @param ia			Valor que representa a IA neste jogo.
+	 * @param user			Valore que representa o usuário neste jogo.
+	 * @return				Valor da heurística do tabuleiro.
+	 */
 	public int getBoardValue(char ia, char user){
 		String possibilities = getAllPossibilities();
 		int value = this.cs.getPossibilitiesSum(possibilities, ia, user);
-		
-		//System.out.println(possibilities +"\nLast: "+ lastMove.getPlayer() +" - Value: " +value);
-		//System.out.println(toString() + "\nValue: " +value);
 		return value;
 	}
 	
+	/**
+	 * Retorna uma representação em String de todas as 
+	 *  possiveis linhas, colunas e diagonais do tabuleiro.
+	 * 
+	 * @return			Representação de todas as linhas, colunas e diagonais
+	 * 					 do tabuleiro.
+	 */
 	private String getAllPossibilities(){
 		String s = getAllRows() + getAllColumns() + 
 				getAllLeftDiagonals() + getAllRightDiagonals();
 		return s;
 	}
 	
+	/**
+	 * Retorna uma representação em String de todas
+	 *  as linhas do tabuleiro.
+	 * 
+	 * @return			Representação de todas as linhas
+	 * 					 do tabuleiro.
+	 */
 	private String getAllRows(){
 		String s = "";
 		for(int y = 0; y<this.size; y++)
 			s += new String(this.board[y]) + "\n";
-		//s += "\n---------------------\n";
 		return s;
 	}
 	
+	/**
+	 * Retorna uma representação em String de todas
+	 *  as colunas do tabuleiro.
+	 * 
+	 * @return			Representação de todas as colunas
+	 * 					 do tabuleiro.
+	 */
 	private String getAllColumns(){
 		String s = "";
 		for(int x = 0; x<this.size; x++){
@@ -259,10 +233,16 @@ public class Board {
 			}
 			s += "\n";
 		}
-		//s += "\n---------------------\n";
 		return s;
 	}
 	
+	/**
+	 * Retorna uma representação em String de todas
+	 *  as 'diagonais esquerdas' com no mínimo 5 casas.
+	 * 
+	 * @return			Representação de todas as 'diagonais esquerdas'
+	 * 					 do tabuleiro.
+	 */
 	private String getAllLeftDiagonals(){
 		String s = "";
 		// diagonal inferior
@@ -282,10 +262,16 @@ public class Board {
 			}
 			s += "\n";
 		}
-		//s += "\n---------------------\n";
 		return s;
 	}
 	
+	/**
+	 * Retorna uma representação em String de todas
+	 *  as 'diagonais direitas' com no mínimo 5 casas.
+	 * 
+	 * @return			Representação de todas as 'diagonais direitas'
+	 * 					 do tabuleiro.
+	 */
 	private String getAllRightDiagonals(){
 		String s = "";
 		// diagonal inferior
@@ -305,10 +291,30 @@ public class Board {
 			}
 			s += "\n";
 		}
-		//s += "\n---------------------\n";
 		return s;
 	}
+
+	/**
+	 * Reseta o tabuleiro limpando ele.
+	 */
+	public void reset(){
+		cleanBoard();
+	}
 	
+	/**
+	 * Limpa o tabuleiro colocando todos os valores
+	 *  como <b>Board.NO_VAL</b>.
+	 */
+	private void cleanBoard(){
+		for(int i = 0; i<this.size; i++)
+			Arrays.fill(this.board[i], Board.NO_VAL);
+	}
+	
+	/**
+	 * Cria uma cópia deste tabuleiro.
+	 * 
+	 * @return		Uma cópia deste tabuleiro.
+	 */
 	public Board copy(){
 		Board board = new Board(this.size);
 		
@@ -320,5 +326,60 @@ public class Board {
 		
 		board.setLastMove(this.lastMove.copy());
 		return board;
+	}
+	
+	@Override
+	public String toString() {
+		String s = "";
+		for(int y = 0; y<size; y++)
+			s += new String(board[y]) + "\n";
+		return s;
+	}
+	
+	// ------- Getters and Setters ------- \\
+	/**
+	 * Retorna o valor da posição especificada.
+	 * 
+	 * @param x			Valor x da posição que se quer o valor.
+	 * @param y			Valor y da posição que se quer o valor.
+	 * @return			Valor da posição (x, y).
+	 */
+	public char getValue(int x, int y){
+		return this.board[y][x];
+	}
+	
+	/**
+	 * Atualiza o valor da posição especificada.
+	 * 
+	 * @param x			Valor x da posição que se quer atualizar o valor.
+	 * @param y			Valor y da posição que se quer atualizar o valor.
+	 * @param value		Valor que se quer por na posição (x, y).
+	 */
+	public void setValue(int x, int y, char value){
+		this.board[y][x] = value;
+		lastMove.setPos(x, y);
+		lastMove.setPlayer(value);
+	}
+	
+	/**
+	 * Atualiza o valor da posição contida no movimento passado.
+	 * 
+	 * @param m				Movimento executado.
+	 */
+	public void setValue(Move m){
+		this.board[m.getPos().y][m.getPos().x] = m.getPlayer();
+		lastMove = m;
+	}
+	
+	public int getSize(){
+		return this.size;
+	}
+	
+	public Move getLastMove(){
+		return this.lastMove;
+	}
+	
+	public void setLastMove(Move m){
+		this.lastMove = m;
 	}
 }

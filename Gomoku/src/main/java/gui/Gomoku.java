@@ -16,7 +16,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import core.Board;
+
 @SuppressWarnings("serial")
+/**
+ * Classe responsável por criar e manter a GUI do jogo.
+ * 
+ * @author Gilney N. Mathias
+ */
 public class Gomoku extends JFrame implements ActionListener {
 	
 	// Dimensão para o frame quando possuir o painel de configuração
@@ -97,7 +104,7 @@ public class Gomoku extends JFrame implements ActionListener {
 		} else if (e.getActionCommand() == "Sair") {
 			System.exit(0);
 		} else if (e.getActionCommand() == "Voltar") {
-			this.gamePanel.stopGame();
+			this.gamePanel.gameOver();
 			showConfig();
 		}
 	}
@@ -128,6 +135,14 @@ public class Gomoku extends JFrame implements ActionListener {
 		return this.btnsPanel;
 	}
 	
+	/**
+	 * Retorna o painel de status do jogo, que contem de quem é a vez e
+	 *  um botão de voltar ao menu de configuração.</br>
+	 * Caso o painel ainda não tenha sido criado, ele é criado antes de 
+	 *  ser retornado.
+	 * 
+	 * @return				Painel de status do jogo.
+	 */
 	public JPanel getGameStatusPanel(){
 		if(this.gameStatusPanel == null){
 			JPanel panel = new JPanel();
@@ -157,6 +172,13 @@ public class Gomoku extends JFrame implements ActionListener {
 		return this.gameStatusPanel;
 	}
 	
+	/**
+	 * Muda o texto da label de próximo jogador do painel 
+	 *  de status do jogo.
+	 * 
+	 * @param txt			Texto que será exibido na label de 
+	 * 						 próximo jogador.
+	 */
 	public void setGameStatus(String txt){
 		this.gameStatusLbl.setText(txt);
 	}

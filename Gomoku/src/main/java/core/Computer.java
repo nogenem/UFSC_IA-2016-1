@@ -2,6 +2,11 @@ package core;
 
 import gui.GamePanel;
 
+/**
+ * Classe que executa as jogadas da IA.
+ * 
+ * @author Gilney N. Mathias
+ */
 public class Computer implements Runnable {
 	
 	private GamePanel panel;
@@ -30,23 +35,34 @@ public class Computer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Executa um movimento da IA.
+	 */
 	private void play(){
 		Move m = ia.getBestMove( panel.getState().getBoard() );
 		if(!this.endGame){
-			System.out.println(m);
 			panel.iaPerformMove(m);
 			running = false;
 		}
 	}
 	
+	/**
+	 * Termina esta thread.
+	 */
 	public void gameOver(){
 		this.endGame = true;
 	}
 	
+	/**
+	 * Ativa esta thread.
+	 */
 	public void resume(){
 		this.running = true;
 	}
 	
+	/**
+	 * Pausa esta thread.
+	 */
 	public void pause(){
 		this.running = false;
 	}

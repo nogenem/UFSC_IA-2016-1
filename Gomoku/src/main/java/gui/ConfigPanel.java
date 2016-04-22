@@ -11,6 +11,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Classe reponsável por criar o painel de configurações do jogo.
+ * 
+ * @author Gilney N. Mathias
+ */
 @SuppressWarnings("serial")
 public class ConfigPanel extends JPanel implements ItemListener {
 	

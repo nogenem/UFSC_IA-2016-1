@@ -2,11 +2,16 @@ package core;
 
 import java.awt.Point;
 
+/**
+ * Classe que representa um movimento no tabuleiro.
+ * 
+ * @author Gilney N. Mathias
+ */
 public class Move {
 	
-	private Point pos;
-	private char player;
-	private int score;
+	private Point pos;//Posição do movimento
+	private char player;//Quem executou o movimento?
+	private int score;//Score do tabuleiro após executar este movimento
 	
 	public Move(){
 		this(0, 0, Board.NO_VAL, 0);

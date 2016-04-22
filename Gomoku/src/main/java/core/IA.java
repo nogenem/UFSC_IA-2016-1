@@ -2,18 +2,22 @@ package core;
 
 import java.util.ArrayList;
 
+/**
+ * Classe responsável pelas operações da IA do jogo.
+ * 
+ * @author Gilney N. Mathias
+ */
 public class IA {
 	
 	private char iaPlayer;
 	private char userPlayer;
 	
+	//Conta a quantidade de interações do algortimo alphabeta
 	private int count = 0;
-	//Na real desce maxDepth+1, ja que o primeiro nivel é feito fora da função alphabeta
+	//Na real desce maxDepth+1, ja que vai até 0
 	private final int maxDepth = 2;
 	
-	public IA() {
-		// TODO Auto-generated constructor stub
-	}
+	public IA() {}
 	
 	/**
 	 * Atualiza qual é o valor do IA e do USER no tabuleiro.
@@ -42,7 +46,6 @@ public class IA {
 		
 		ArrayList<Move> moves = board.getAllPossibleMoves(iaPlayer);
 		for(Move m: moves){
-			count++;
 			board.setValue(m);
 			int alpha = alphaBeta(board, userPlayer, bestScore, Integer.MAX_VALUE, maxDepth);
 			board.setValue(m.getPos().x, m.getPos().y, Board.NO_VAL);
@@ -54,10 +57,21 @@ public class IA {
 		}
 		
 		long fim = System.currentTimeMillis();
-		System.out.println("Time: " +(fim-inicio) +"ms - Count: " +count);
+		System.out.println("Tempo: " +((fim-inicio)/1000) +"s - Interações: " +count);
+		System.out.println(bestMove +"\n---------------------------------");
 		return bestMove;
 	}
 	
+	/**
+	 * Algoritmo de Minimax com poda alpha e beta.
+	 * 
+	 * @param board				Tabuleiro atual do jogo.
+	 * @param player			Player atual.
+	 * @param alpha				Valor alpha até agora.
+	 * @param beta				Valor beta até agora.
+	 * @param depth				Profundidade da recursão.
+	 * @return					Melhor alpha ou beta encontrado.
+	 */
 	private int alphaBeta(Board board, char player, int alpha, int beta, int depth){	
 		count++;
 		if(depth == 0 || isLeaf(board)){
@@ -95,9 +109,8 @@ public class IA {
 	}
 	
 	/**
-	 * Ideia inicial do método para verificar se um tabuleiro
-	 *  é folha ou não.
-	 * 
+	 * Método que verifica se um tabuleiro é folha ou não.
+	 *  
 	 * @param board				Board, node, a verificação.
 	 * @param lastMove			Ultimo movimento realizado no tabuleiro.
 	 * @return					<b>TRUE</b> caso o tabuleiro seja folha,</br>
@@ -105,9 +118,5 @@ public class IA {
 	 */
 	private boolean isLeaf(Board board){
 		return board.checkBoardState() != Board.NO_VAL;
-	}
-	
-	public char getIaPiece(){
-		return iaPlayer;
 	}
 }

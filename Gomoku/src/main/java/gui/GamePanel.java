@@ -19,26 +19,31 @@ import core.GomokuState;
 import core.Move;
 
 /**
+ * Classe responsável por criar e gerenciar o painel
+ *  que representa o tabuleiro do jogo.</br>
+ * 
  *	Arquivo base:
+ *  <ul><li><a href="http://cs.gettysburg.edu/~tneller/cs111/gomoku/gui/Gomoku.java">
  *  	http://cs.gettysburg.edu/~tneller/cs111/gomoku/gui/Gomoku.java
+ * 	</a></li></ul>
  *  
  * @author Todd W. Neller [base]
- * @author Gilney Nathanael Mathias [edições]
+ * @author Gilney N. Mathias [edições]
  */
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 	
 	private final int MARGIN = 5;
     private final double PIECE_FRAC = 0.9;
-    private final int size = 9;//15
+    private final int size = 15;		//Tamanho do tabuleiro
     
     private GomokuState state;
     private Computer comp;
-    private Gomoku parent;
+    private Gomoku parent;				//JFrame pai deste painel
 
-    private boolean isMultiplayer;
-    private boolean iaBegins;
-    private boolean canPlayerInteract;
+    private boolean isMultiplayer;		//Jogo é multiplayer? 
+    private boolean iaBegins;			//É a IA que começa jogando?
+    private boolean canPlayerInteract;	//Player pode adicionar um peça no jogo?
     
 	public GamePanel(Gomoku parent) {
 		super();
@@ -60,10 +65,10 @@ public class GamePanel extends JPanel {
 	 */
 	public void init(boolean isMultiplayer, boolean iaBegins){
     	this.isMultiplayer = isMultiplayer;
-		this.iaBegins = (!isMultiplayer && iaBegins);
+		this.iaBegins = (!isMultiplayer && iaBegins);//Ia realmente começa jogando?
 		this.canPlayerInteract = !this.iaBegins;
 		
-		parent.setGameStatus("Vez do player BLACK.");
+		parent.setGameStatus("Vez do player BLACK.");//Player BLACK sempre começa jogando
 		
 		state.init();
 		if(!isMultiplayer)
@@ -81,7 +86,7 @@ public class GamePanel extends JPanel {
 		/**
 		 * Calcula o valor de <b>x</b> e <b>y</b> no tabuleiro e 
 		 *  efetua a jogada do usuário nesta posição.</br>
-		 * Caso o jogo seja Single Player, efetua também a jogada da IA.
+		 * Caso o jogo seja Single Player, destrava a thread que executa a jogada da IA.
 		 */
 		public void mouseReleased(MouseEvent e) {
 			if(!canPlayerInteract) return;
@@ -103,6 +108,7 @@ public class GamePanel extends JPanel {
 		    	if(checkVictory())
 		    		return;
 		    	
+		    	//Se for singleplayer, destrava a thread da IA
 		    	if(!isMultiplayer){
 		    		comp.resume();
 		    		canPlayerInteract = false;
@@ -131,8 +137,7 @@ public class GamePanel extends JPanel {
     		case Board.TIE_VAL:
     			JOptionPane.showMessageDialog(parent, "O jogo empatou!");
     		}
-    		if(!isMultiplayer)
-    			comp.gameOver();
+    		this.gameOver();
     		parent.gameOver();
     		return true;
     	}
@@ -194,10 +199,11 @@ public class GamePanel extends JPanel {
     	}
 	}
 	
-	public GomokuState getState(){
-		return this.state;
-	}
-	
+	/**
+	 * Função que executa um movimento da IA.
+	 * 
+	 * @param m			Movimento a ser realizado.
+	 */
 	public void iaPerformMove(Move m){
 		state.playPiece(m);
 		repaint();
@@ -209,9 +215,18 @@ public class GamePanel extends JPanel {
 		canPlayerInteract = true;
 	}
 	
-	public void stopGame(){
-		if(this.comp != null)
+	/**
+	 * Caso o jogo seja singleplayer, acaba com a thread da IA.
+	 */
+	public void gameOver(){
+		if(this.comp != null){
 			this.comp.gameOver();
+			this.comp = null;
+		}
 	}
-
+	
+	// ------- Getters and Setters ------- \\
+	public GomokuState getState(){
+		return this.state;
+	}
 }

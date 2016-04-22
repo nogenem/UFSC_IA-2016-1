@@ -1,9 +1,10 @@
 package core;
 
-
-/*
- * VER PQ TA DEMORANDO TANTO
- * VER O TRAB DO BUDA, A PARTE DE THREAD
+/**
+ * Classe que guarda o estado do jogo, o tabuleiro e quem é o
+ *  jogador atual.
+ * 
+ * @author Gilney N. Mathias
  */
 public class GomokuState {
 	
@@ -79,6 +80,7 @@ public class GomokuState {
 				Board.WHITE : Board.BLACK;
 	}
 	
+	// ------- Getters and Setters ------- \\
 	public Board getBoard(){
 		return this.board;
 	}
