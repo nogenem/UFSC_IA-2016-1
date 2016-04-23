@@ -15,7 +15,7 @@ public class IA {
 	//Conta a quantidade de interações do algortimo alphabeta
 	private int count = 0;
 	//Na real desce maxDepth+1, ja que vai até 0
-	private final int maxDepth = 2;
+	private final int maxDepth = 3;
 	
 	public IA() {}
 	
@@ -44,20 +44,27 @@ public class IA {
 		count = 0;
 		long inicio = System.currentTimeMillis();
 		
-		ArrayList<Move> moves = board.getAllPossibleMoves(iaPlayer);
-		for(Move m: moves){
-			board.setValue(m);
-			int alpha = alphaBeta(board, userPlayer, bestScore, Integer.MAX_VALUE, maxDepth);
-			board.setValue(m.getPos().x, m.getPos().y, Board.NO_VAL);
-			if(alpha > bestScore || bestMove == null){
-				bestMove = m;
-				bestMove.setScore(alpha);
-				bestScore = alpha;
+		//Se ainda não houve nenhum movimento, então jogue no meio
+		if(board.getMoveList().size() == 0){
+			int y = board.getSize() / 2;
+			int x = (board.getSize() % 2 == 0) ? y - 1 : y; //shift left for even n's
+			bestMove = new Move(x,y,iaPlayer);
+		}else{
+			ArrayList<Move> moves = board.getAllPossibleMoves(iaPlayer);
+			for(Move m: moves){
+				board.setValue(m);
+				int alpha = alphaBeta(board, userPlayer, bestScore, Integer.MAX_VALUE, maxDepth);
+				board.setValue(m.getPos().x, m.getPos().y, Board.NO_VAL);
+				if(alpha > bestScore || bestMove == null){//primeiro nivel é MAX
+					bestMove = m;
+					bestMove.setScore(alpha);
+					bestScore = alpha;
+				}
 			}
 		}
 		
 		long fim = System.currentTimeMillis();
-		System.out.println("Tempo: " +((fim-inicio)/1000) +"s - Interações: " +count);
+		System.out.println("Tempo: " +((fim-inicio)/1000.0) +"s - Interações: " +count);
 		System.out.println(bestMove +"\n---------------------------------");
 		return bestMove;
 	}

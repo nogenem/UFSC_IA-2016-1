@@ -1,6 +1,5 @@
 package core;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,60 +23,53 @@ public class Board {
 	private int size;
 	private char board[][];
 	private CalcScore cs;
-	private Move lastMove;
+	private ArrayList<Move> moveList;
 	
 	public Board(int size){
 		this.size = size;
 		this.board = new char[this.size][this.size];
 		this.cs = new CalcScore();
-		this.lastMove = new Move();
+		this.moveList = new ArrayList<>();
 		
 		cleanBoard();
 	}
 	
 	/**
-	 * Retorna uma lista com todos os movimentos possíveis no tabuleiro.</br>
-	 * Utiliza como base o algoritmo da 'Spiral de Ulam' para percorrer a matriz
-	 *  em forma de espiral começando pelo meio dela.
+	 * O algoritmo passa por todos os movimentos ja feitos no tabuleiro,
+	 *  do ultimo ao primeiro movimento, e adiciona a lista as casas
+	 *  vazias em volta da posição de cada um destes movimentos. 
 	 * 
 	 * @param player			De quem é a vez.
 	 * @return					Lista dos possíveis movimentos.
 	 */
 	public ArrayList<Move> getAllPossibleMoves(char player){
 		ArrayList<Move> moves = new ArrayList<>();
+		int dx[] = {1,  1,  0, -1, -1, -1, 0, 1};
+		int dy[] = {0, -1, -1, -1,  0,  1, 1, 1};
 		
-		Direction dir = Direction.RIGHT;
-		int n = size, n2 = n*n;
-		int y = n / 2;
-		int x = (n % 2 == 0) ? y - 1 : y; //shift left for even n's
-		int j = 1;
-		ArrayList<Point> v = new ArrayList<>();
+		int y, x;
+		Move move = null, tmp = null;
 		
-		while(j <= n2){
-			if(getValue(x, y) == Board.NO_VAL)
-				moves.add(new Move(x, y, player));
-			
-			v.add(new Point(x,y));
-			
-			switch(dir){
-			case RIGHT:
-				if(x <= (n - 1) && !v.contains(new Point(x, y-1)) && j > 1) dir = Direction.UP; break;
-			case UP:
-				if(!v.contains(new Point(x-1, y))) dir = Direction.LEFT; break;
-			case LEFT:
-				if(x == 0 || !v.contains(new Point(x, y+1))) dir = Direction.DOWN; break;
-			case DOWN:
-				if(!v.contains(new Point(x+1, y))) dir = Direction.RIGHT; break;
+		for(int j = moveList.size()-1; j>=0; j--){
+			tmp = moveList.get(j);
+			for(int i = 0; i<8; i++){
+				x = tmp.getPos().x + dx[i];
+				y = tmp.getPos().y + dy[i];
+				move = new Move(x, y, player);
+				if(x >= 0 && y >= 0 && x < size && y < size && 
+						getValue(x, y) == NO_VAL && !moves.contains(move)){
+					moves.add(move);
+				}
 			}
-
-			switch(dir){
-				case RIGHT:	x++; break;
-				case UP: 	y--; break;
-				case LEFT:	x--; break;
-				case DOWN:	y++; break;
-			}
-			j++;
 		}
+		
+		/*y = size / 2;
+		x = (size % 2 == 0) ? y - 1 : y; //shift left for even n's
+		move = new Move(x,y,player);
+		
+		// Caso não tenha peça no meio, adiciona ele na lista
+		if(getValue(x, y) == NO_VAL && !moves.contains(move))
+			moves.add(move);*/
 		
 		return moves;
 	}
@@ -90,8 +82,8 @@ public class Board {
 	 * 							<b>Board.NO_VAL</b> caso contrario.
 	 */
 	public char checkBoardState(){
-		int x = lastMove.getPos().x, 
-			y = lastMove.getPos().y;
+		int x = getLastMove().getPos().x, 
+			y = getLastMove().getPos().y;
 		
 		String s;
 		int x1, y1, min, max, tmp, tmp2;
@@ -160,9 +152,9 @@ public class Board {
 		
 		//System.out.println(s +"\n");
 		String strCheck = new String(new char[5])
-				.replace("\0", ""+lastMove.getPlayer());
+				.replace("\0", ""+getLastMove().getPlayer());
 		if(s.contains(strCheck))
-			return lastMove.getPlayer();
+			return getLastMove().getPlayer();
 		
 		//Check TIE
 		s = "";
@@ -299,6 +291,7 @@ public class Board {
 	 */
 	public void reset(){
 		cleanBoard();
+		moveList.clear();
 	}
 	
 	/**
@@ -318,13 +311,11 @@ public class Board {
 	public Board copy(){
 		Board board = new Board(this.size);
 		
-		for(int y = 0; y<size; y++){
-			for(int x = 0; x<size; x++){
-				board.setValue(x, y, this.getValue(x, y));
-			}
+		//Atualiza o board e o moveList ao mesmo tempo
+		for(Move m : this.moveList){
+			board.setValue(m);
 		}
 		
-		board.setLastMove(this.lastMove.copy());
 		return board;
 	}
 	
@@ -356,9 +347,7 @@ public class Board {
 	 * @param value		Valor que se quer por na posição (x, y).
 	 */
 	public void setValue(int x, int y, char value){
-		this.board[y][x] = value;
-		lastMove.setPos(x, y);
-		lastMove.setPlayer(value);
+		this.setValue(new Move(x, y, value));
 	}
 	
 	/**
@@ -368,7 +357,10 @@ public class Board {
 	 */
 	public void setValue(Move m){
 		this.board[m.getPos().y][m.getPos().x] = m.getPlayer();
-		lastMove = m;
+		if(m.getPlayer() == NO_VAL)//esta desfazendo o movimento na recursão do minimax
+			moveList.remove(moveList.size()-1);
+		else
+			moveList.add(m);
 	}
 	
 	public int getSize(){
@@ -376,10 +368,10 @@ public class Board {
 	}
 	
 	public Move getLastMove(){
-		return this.lastMove;
+		return this.moveList.get(moveList.size()-1);
 	}
 	
-	public void setLastMove(Move m){
-		this.lastMove = m;
+	public ArrayList<Move> getMoveList(){
+		return this.moveList;
 	}
 }
