@@ -8,36 +8,36 @@ import javax.swing.JFrame;
  */
 public class LineFollowerApplet extends Applet {
 
-  public RobotSandbox sandbox;
+	public RobotSandbox sandbox;
 
-  @Override
-  public void init() {
-    this.setSize(920, 373);
-    sandbox = new RobotSandbox();
-    this.add(sandbox);
-    sandbox.setVisible(true);
+	@Override
+	public void init() {
+		this.setSize(920, 373);
+		sandbox = new RobotSandbox();
+		this.add(sandbox);
+		sandbox.setVisible(true);
 
-    SettingsJPanel settings = new SettingsJPanel(sandbox.robot);
-    add(settings);
-    settings.UpdateAllSettings();
+		SettingsJPanel settings = new SettingsJPanel(sandbox.robot);
+		add(settings);
+		settings.UpdateAllSettings();
 
-    sandbox.StartAnimation();
-    
-  }
+		sandbox.StartAnimation();
 
-  public static void main(String[] args) {
+	}
 
-    //... Create an initialize the applet.
-    LineFollowerApplet applet = new LineFollowerApplet();
-    applet.init();
+	public static void main(String[] args) {
 
-    //... Create a window (JFrame) and make applet the content pane.
-    JFrame window = new JFrame("Line follower simulator");
-    window.setContentPane(applet);
-    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    window.pack();              // Arrange the components.
-    window.setVisible(true);    // Make the window visible.
+		// ... Create an initialize the applet.
+		LineFollowerApplet applet = new LineFollowerApplet();
+		applet.init();
 
-  }
+		// ... Create a window (JFrame) and make applet the content pane.
+		JFrame window = new JFrame("Line follower simulator");
+		window.setContentPane(applet);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.pack(); // Arrange the components.
+		window.setVisible(true); // Make the window visible.
+
+	}
 
 }

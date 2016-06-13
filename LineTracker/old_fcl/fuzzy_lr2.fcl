@@ -1,0 +1,90 @@
+FUNCTION_BLOCK lineTracker
+
+// Define input variables
+VAR_INPUT
+	left_sensor: REAL;
+	right_sensor: REAL;
+END_VAR
+
+// Define output variables
+VAR_OUTPUT
+	left_engine: REAL;
+	right_engine: REAL;
+END_VAR
+
+// Fuzzify input variable 'left_sensor': 
+// 		{'leftBig', 'leftMedium', 'centred', 'rightMedium', 'rightBig'}
+FUZZIFY left_sensor
+	TERM rightBig := (0.5, 0) (1, 1);
+	TERM rightMedium := (0.25, 0) (0.75, 1);
+	TERM centred := (0, 0) (0.25, 1) (0.5, 0);
+	TERM leftMedium := (-0.5, 1)(0.25, 0);
+	TERM leftBig := (-1, 1) (-0.25, 0);
+END_FUZZIFY
+
+// Fuzzify input variable 'right_sensor':
+// 		{'leftBig', 'leftMedium', 'centred', 'rightMedium', 'rightBig'}
+FUZZIFY right_sensor
+	TERM leftBig := (0.5, 0) (1, 1);
+	TERM leftMedium := (0.25, 0) (0.75, 1);
+	TERM centred := (0, 0) (0.25, 1) (0.5, 0);
+	TERM rightMedium := (-0.5, 1)(0.25, 0);
+	TERM rightBig := (-1, 1) (-0.25, 0);
+END_FUZZIFY
+
+// Defuzzify output variable 'left_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY left_engine
+	TERM slow := (0.2, 1) (0.5, 0);
+	TERM medium := (0.3, 0) (0.5, 1) (0.7, 0);
+	TERM fast := (0.5, 0) (0.8, 1);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Defuzzify output variable 'right_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY right_engine
+	TERM slow := (0.2, 1) (0.5, 0);
+	TERM medium := (0.3, 0) (0.5, 1) (0.7, 0);
+	TERM fast := (0.5, 0) (0.8, 1);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK rules
+	AND : MIN; // Use 'min' for 'and'
+	
+	// Centro
+	RULE 0: IF left_sensor IS centred AND right_sensor IS centred 
+		THEN left_engine IS slow, right_engine IS slow;
+	
+	// Muito a esquerda
+	RULE 1: IF left_sensor IS leftBig 
+		THEN right_engine IS fast, left_engine IS slow;
+	
+	// Muito a direita
+	RULE 2: IF right_sensor IS rightBig 
+		THEN left_engine IS fast, right_engine IS slow;
+		
+	// Medio a esquerda
+	RULE 2: IF left_sensor IS leftMedium 
+		THEN right_engine IS medium, left_engine IS slow;
+		
+	// Medio a direita
+	RULE 3: IF right_sensor IS rightMedium
+		THEN left_engine IS medium, right_engine IS slow;
+		
+	// Ambos para esquerda
+	RULE 4: IF left_sensor IS leftMedium AND right_sensor IS leftMedium 
+		THEN right_engine IS medium, left_engine IS slow;
+	
+	// Ambos para direita
+	RULE 5: IF left_sensor IS rightMedium AND right_sensor IS rightMedium
+		THEN left_engine IS medium, right_engine IS slow;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

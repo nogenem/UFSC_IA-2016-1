@@ -1,0 +1,69 @@
+FUNCTION_BLOCK lineTracker
+
+// Define input variables
+VAR_INPUT
+	diff_sensor: REAL;
+END_VAR
+
+// Define output variables
+VAR_OUTPUT
+	left_engine: REAL;
+	right_engine: REAL;
+END_VAR
+
+// Fuzzify input variable 'diff_sensor': 
+// 		{'leftBig', 'leftMedium', 'centred', 'rightMedium', 'rightBig'}
+FUZZIFY diff_sensor
+	TERM leftBig := (-2.5, 1) (-1, 0);
+	TERM leftMedium := (-1.5, 1) (0, 0);
+	TERM centred := (-0.5, 0) (0, 1) (0.5, 0);
+	TERM rightMedium := (0, 0)(1, 1);
+	TERM rightBig := (0.5, 0) (1.5, 1);
+END_FUZZIFY
+
+// Defuzzify output variable 'left_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY left_engine
+	TERM reverse := (-0.75, 1) (-0.25, 0);
+	TERM slow := (0.2, 0) (0.2, 1) (0.5, 0);
+	TERM medium := (0.3, 0) (0.5, 1) (0.7, 0);
+	TERM fast := (0.5, 0) (1, 1);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Defuzzify output variable 'right_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY right_engine
+	TERM reverse := (-0.75, 1) (-0.25, 0);
+	TERM slow := (0.2, 0) (0.2, 1) (0.5, 0);
+	TERM medium := (0.3, 0) (0.5, 1) (0.7, 0);
+	TERM fast := (0.5, 0) (1, 1);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK rules
+	AND : MIN; // Use 'min' for 'and'
+	
+	RULE 0: IF diff_sensor IS leftBig
+		THEN right_engine IS fast, left_engine IS reverse;
+	
+	RULE 1: IF diff_sensor IS leftMedium
+		THEN right_engine IS medium, left_engine IS slow;
+	
+	RULE 2: IF diff_sensor IS centred
+		THEN right_engine IS slow, left_engine IS slow;
+	
+	RULE 3: IF diff_sensor IS rightMedium
+		THEN left_engine IS medium, right_engine IS slow;
+	
+	RULE 4: IF diff_sensor IS rightBig
+		THEN left_engine IS fast, right_engine IS reverse;
+	
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

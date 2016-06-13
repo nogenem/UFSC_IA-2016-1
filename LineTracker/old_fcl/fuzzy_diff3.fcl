@@ -1,0 +1,87 @@
+FUNCTION_BLOCK lineTracker
+
+// Define input variables
+VAR_INPUT
+	diff_sensor: REAL;
+END_VAR
+
+// Define output variables
+VAR_OUTPUT
+	left_engine: REAL;
+	right_engine: REAL;
+END_VAR
+
+// Fuzzify input variable 'diff_sensor': 
+// 		{'leftBig', 'leftMedium', 'centred', 'rightMedium', 'rightBig'}
+FUZZIFY diff_sensor
+	TERM leftBig := (-2.5, 1) (-1.5, 0);
+	TERM leftMedium := (-2, 1) (-1, 0);
+	TERM leftLow := (-1.5, 1) (-0.5,0);
+	TERM leftVeryLow := (-1.0, 1) (0, 0);
+	TERM centred := (-0.5, 0) (0, 1) (0.5, 0);
+	TERM rightLow := (0, 0)(1, 1);
+	TERM rightMedium := (0.5, 0) (1.5, 1);
+	TERM rightBig := (1, 0) (1.5, 1);
+END_FUZZIFY
+
+// Defuzzify output variable 'left_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY left_engine
+	TERM turnRightFast := (-0.75, 0) (-0.5, 1) (-0.5, 0);
+	TERM turnRightMedium := (-0.5, 0) (-0.25, 1) (-0.25, 0);
+	TERM turnRightSlow := (-0.25, 0) (0, 1) (0, 0);
+	TERM straight := (0, 0) (0.5, 1) (0.5, 0);
+	TERM turnLeftSlow := (0.25, 0) (0.25, 1) (0.75, 0);
+	TERM turnLeftMedium := (0.5, 0) (0.5, 1) (1, 0);
+	TERM turnLeftFast := (0.75, 0) (0.75, 1) (1,0);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Defuzzify output variable 'right_engine':
+// 		{'bigRight', 'smallRight', 'zero', 'smallLeft', 'bigLeft'}
+DEFUZZIFY right_engine
+	TERM turnLeftFast := (-0.75, 0) (-0.5, 1) (-0.5, 0);
+	TERM turnLeftMedium := (-0.5, 0) (-0.25, 1) (-0.25, 0);
+	TERM turnLeftSlow := (-0.25, 0) (0, 1) (0, 0);
+	TERM straight := (0, 0) (0.5, 1) (0.5, 0);
+	TERM turnRightSlow := (0.25, 0) (0.25, 1) (0.75, 0);
+	TERM turnRightMedium := (0.5, 0) (0.5, 1) (1, 0);
+	TERM turnRightFast := (0.75, 0) (0.75, 1) (1,0);
+	
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+// Inference rules
+RULEBLOCK rules
+	AND : MIN; // Use 'min' for 'and'
+	
+	RULE 0: IF diff_sensor IS leftBig
+		THEN right_engine IS turnRightFast, left_engine IS turnRightFast;
+	
+	RULE 1: IF diff_sensor IS leftMedium
+		THEN right_engine IS turnRightMedium, left_engine IS turnRightMedium;
+	
+	RULE 2: IF diff_sensor IS leftLow
+		THEN right_engine IS turnRightSlow, left_engine IS turnRightSlow;
+	
+	RULE 3: IF diff_sensor IS leftVeryLow
+		THEN right_engine IS turnRightSlow, left_engine IS straight;
+	
+	RULE 4: IF diff_sensor IS centred
+		THEN right_engine IS straight, left_engine IS straight;
+	
+	RULE 5: IF diff_sensor IS rightLow
+		THEN right_engine IS turnLeftSlow, left_engine IS turnLeftSlow;
+	
+	RULE 6: IF diff_sensor IS rightMedium
+		THEN right_engine IS turnLeftMedium, left_engine IS turnLeftMedium;
+	
+	RULE 7: IF diff_sensor IS rightBig
+		THEN right_engine IS turnLeftFast, left_engine IS turnLeftFast;
+	
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
